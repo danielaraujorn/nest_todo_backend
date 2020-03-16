@@ -7,6 +7,7 @@ import {
   UpdateDateColumn,
   OneToMany,
   PrimaryGeneratedColumn,
+  Generated,
 } from 'typeorm';
 import { TodoEntity } from '../../todo/entities/todo.entity';
 
@@ -15,6 +16,7 @@ import { TodoEntity } from '../../todo/entities/todo.entity';
 export class ListEntity {
   @Field(type => ID)
   @PrimaryGeneratedColumn({ type: 'uuid' })
+  @Generated('uuid')
   readonly id: ObjectID;
 
   @Field()

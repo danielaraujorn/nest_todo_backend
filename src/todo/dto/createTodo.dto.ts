@@ -2,9 +2,12 @@ import { ID, Field, InputType } from '@nestjs/graphql';
 
 @InputType('CreateTodoInput')
 export class CreateTodoDto {
-  @Field()
-  text: string;
+  @Field({ nullable: true })
+  text?: string;
 
-  @Field(type => ID)
-  listId: string;
+  @Field(type => ID, { nullable: true })
+  listId?: string;
+
+  @Field({ nullable: true })
+  completed?: boolean;
 }

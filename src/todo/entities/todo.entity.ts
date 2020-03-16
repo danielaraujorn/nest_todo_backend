@@ -7,6 +7,7 @@ import {
   UpdateDateColumn,
   ManyToOne,
   PrimaryGeneratedColumn,
+  Generated,
 } from 'typeorm';
 import { ListEntity } from '../../list/entities/list.entity';
 
@@ -15,6 +16,7 @@ import { ListEntity } from '../../list/entities/list.entity';
 export class TodoEntity {
   @Field(type => ID)
   @PrimaryGeneratedColumn({ type: 'uuid' })
+  @Generated('uuid')
   readonly id: ObjectID;
 
   @Field()
@@ -30,7 +32,7 @@ export class TodoEntity {
   updatedAt?: Date;
 
   @Field()
-  @Column({ default: true })
+  @Column({ default: false })
   completed: boolean;
 
   @Field(type => ListEntity)

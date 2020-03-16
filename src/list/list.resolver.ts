@@ -2,7 +2,7 @@ import { ID } from '@nestjs/graphql';
 import { NotFoundException } from '@nestjs/common';
 import { Query, Mutation, Args, Resolver } from '@nestjs/graphql';
 import { ListEntity } from './entities/list.entity';
-import { ListListsEntity as ListLists } from './entities/listLists.entity';
+import { ListListsEntity } from './entities/listLists.entity';
 import { CreateListDto } from './dto/createList.dto';
 import { UpsertListDto } from './dto/upsertList.dto';
 import { FindListsDto } from './dto/findLists.dto';
@@ -21,9 +21,9 @@ export class ListResolver {
     return list;
   }
 
-  @Query(returns => ListLists)
-  lists(@Args() queryArgs: FindListsDto): Promise<ListLists> {
-    return this.service.findLists(queryArgs);
+  @Query(returns => ListListsEntity)
+  lists(@Args() queryArgs: FindListsDto): Promise<ListListsEntity> {
+    return this.service.find(queryArgs);
   }
 
   @Mutation(returns => ListEntity)
@@ -33,13 +33,13 @@ export class ListResolver {
       listInput,
     }: { id?: string; listInput: CreateListDto } = mutationArgs;
 
-    return await this.service.upsertList(id, listInput);
+    return await this.service.upsert(id, listInput);
   }
 
   @Mutation(returns => Boolean)
   deactivateList(
     @Args({ name: 'id', type: () => ID }) id: string,
   ): Promise<boolean> {
-    return this.service.deactivateList(id);
+    return this.service.deactivate(id);
   }
 }

@@ -4,6 +4,9 @@ import { CreateTodoDto } from './dto/createTodo.dto';
 import { TodoRepository } from './repositories/todo.repository';
 import { ListRepository } from 'src/list/repositories/list.repository';
 import { ListEntity } from 'src/list/entities/list.entity';
+import { FindTodosDto } from './dto/findTodos.dto';
+import { ListTodosEntity } from './entities/listTodos.entity';
+import { findOrder } from 'src/common/types/find-order.type';
 
 @Injectable()
 export class TodoService {
@@ -20,9 +23,7 @@ export class TodoService {
     id: string | undefined,
     todo: CreateTodoDto,
   ): Promise<TodoEntity> {
-    const { listId, ...restTodo }: { listId: string } = todo;
-
-    const list: ListEntity = await this.listRepository.findOne(listId);
+    const { listId, ...restTodo }: { listId?: string } = todo;
 
     const newTodo: TodoEntity = id
       ? await this.todoRepository.findOne(id, {
@@ -30,17 +31,47 @@ export class TodoService {
         })
       : new TodoEntity();
 
-    return await this.todoRepository.save({
+    if (listId) {
+      const list: ListEntity = await this.listRepository.findOne(listId);
+      newTodo.list = list;
+    }
+
+    await this.todoRepository.save({
       ...newTodo,
       ...restTodo,
-      list,
+    });
+
+    return await this.todoRepository.findOne(newTodo.id, {
+      relations: ['list'],
     });
   }
 
-  async complete(id: string): Promise<boolean> {
-    const todo: TodoEntity = await this.todoRepository.findOne(id, {
-      relations: ['list'],
-    });
-    return Boolean(this.todoRepository.save({ ...todo, completed: false }));
+  async findTodos(params: FindTodosDto): Promise<ListTodosEntity> {
+    const { skip, take, ids, listId, order, fieldSort } = params;
+
+    const $order: findOrder = {
+      [fieldSort]: order,
+    };
+
+    const $where = {
+      _id: { $in: ids },
+      list: { id: listId },
+    };
+
+    const [items, total]: [TodoEntity[], number] = await Promise.all([
+      this.todoRepository.find({
+        skip,
+        take,
+        relations: ['list'],
+        where: $where,
+        order: $order,
+      }),
+      this.todoRepository.count({ where: $where }),
+    ]);
+
+    return {
+      items,
+      total,
+    };
   }
 }

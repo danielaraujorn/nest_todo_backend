@@ -7,8 +7,9 @@ input CreateListInput {
 }
 
 input CreateTodoInput {
-  text: String!
-  list_id: ID!
+  text: String
+  listId: ID
+  completed: Boolean
 }
 
 """
@@ -30,17 +31,22 @@ type ListLists {
   total: Int!
 }
 
+type ListTodos {
+  items: [Todo!]!
+  total: Int!
+}
+
 type Mutation {
   saveList(id: ID, listInput: CreateListInput!): List!
   deactivateList(id: ID!): Boolean!
   saveTodo(id: ID, todoInput: CreateTodoInput!): Todo!
-  completeTodo(id: ID!): Boolean!
 }
 
 type Query {
   list(id: String!): List!
   lists(skip: Int = 0, take: Int = 50, ids: [ID!], order: String = "DESC", fieldSort: String = "updatedAt"): ListLists!
   todo(id: String!): Todo!
+  todos(skip: Int = 0, take: Int = 50, ids: [ID!], listId: ID, order: String = "DESC", fieldSort: String = "updatedAt"): ListTodos!
 }
 
 type Todo {

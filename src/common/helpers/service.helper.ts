@@ -18,13 +18,4 @@ export class ServiceHelper {
 
     return repository.create(fields);
   }
-
-  getWhereByIds(ids: string[]): IWhereIds {
-    const $where: IWhereIds = {
-      _id: { $in: ids },
-      active: true,
-    };
-
-    return $where;
-  }
 }

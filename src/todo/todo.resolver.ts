@@ -1,10 +1,11 @@
-import { ID } from '@nestjs/graphql';
 import { NotFoundException } from '@nestjs/common';
 import { Query, Mutation, Args, Resolver } from '@nestjs/graphql';
 import { TodoEntity } from './entities/todo.entity';
 import { CreateTodoDto } from './dto/createTodo.dto';
 import { UpsertTodoDto } from './dto/upsertTodo.dto';
 import { TodoService } from './todo.service';
+import { ListTodosEntity } from './entities/listTodos.entity';
+import { FindTodosDto } from './dto/findTodos.dto';
 
 @Resolver(of => TodoEntity)
 export class TodoResolver {
@@ -19,6 +20,11 @@ export class TodoResolver {
     return list;
   }
 
+  @Query(returns => ListTodosEntity)
+  todos(@Args() queryArgs: FindTodosDto): Promise<ListTodosEntity> {
+    return this.service.findTodos(queryArgs);
+  }
+
   @Mutation(returns => TodoEntity)
   async saveTodo(@Args() mutationArgs: UpsertTodoDto): Promise<TodoEntity> {
     const {
@@ -27,12 +33,5 @@ export class TodoResolver {
     }: { id?: string; todoInput: CreateTodoDto } = mutationArgs;
 
     return await this.service.upsert(id, todoInput);
-  }
-
-  @Mutation(returns => Boolean)
-  completeTodo(
-    @Args({ name: 'id', type: () => ID }) id: string,
-  ): Promise<boolean> {
-    return this.service.complete(id);
   }
 }
