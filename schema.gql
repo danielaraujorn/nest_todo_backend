@@ -1,0 +1,53 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+input CreateListInput {
+  text: String!
+}
+
+input CreateTodoInput {
+  text: String!
+  list_id: ID!
+}
+
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
+
+type List {
+  id: ID!
+  text: String!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  active: Boolean!
+  todos: [Todo!]!
+}
+
+type ListLists {
+  items: [List!]!
+  total: Int!
+}
+
+type Mutation {
+  saveList(id: ID, listInput: CreateListInput!): List!
+  deactivateList(id: ID!): Boolean!
+  saveTodo(id: ID, todoInput: CreateTodoInput!): Todo!
+  completeTodo(id: ID!): Boolean!
+}
+
+type Query {
+  list(id: String!): List!
+  lists(skip: Int = 0, take: Int = 50, ids: [ID!], order: String = "DESC", fieldSort: String = "updatedAt"): ListLists!
+  todo(id: String!): Todo!
+}
+
+type Todo {
+  id: ID!
+  text: String!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  completed: Boolean!
+  list: List!
+}
