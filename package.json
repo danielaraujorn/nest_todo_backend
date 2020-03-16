@@ -1,8 +1,8 @@
 {
-  "name": "collaborative_accessibility_back",
+  "name": "nest_todo_backend",
   "version": "0.0.1",
   "description": "",
-  "author": "",
+  "author": "danielaraujorn",
   "license": "MIT",
   "scripts": {
     "build": "tsc -p tsconfig.build.json",
@@ -22,7 +22,7 @@
   "dependencies": {
     "@nestjs/common": "^7.0.2",
     "@nestjs/core": "^7.0.2",
-    "@nestjs/graphql": "^7.0.5",
+    "@nestjs/graphql": "^7.0.6",
     "@nestjs/platform-express": "^7.0.2",
     "@nestjs/typeorm": "^7.0.0",
     "apollo-server-express": "^2.4.8",
