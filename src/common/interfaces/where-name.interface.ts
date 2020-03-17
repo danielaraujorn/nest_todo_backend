@@ -1,4 +1,4 @@
 export interface IWhereName {
-  name?: RegExp;
-  active: boolean;
+  name?: RegExp
+  active: boolean
 }

@@ -1,4 +1,4 @@
-import { Field, ID, ObjectType } from '@nestjs/graphql';
+import { Field, ID, ObjectType } from '@nestjs/graphql'
 import {
   Column,
   Entity,
@@ -9,9 +9,9 @@ import {
   PrimaryGeneratedColumn,
   Generated,
   ManyToOne,
-} from 'typeorm';
-import { TodoEntity } from '../../todo/entities/todo.entity';
-import { UserEntity } from 'src/user/entities/user.entity';
+} from 'typeorm'
+import { TodoEntity } from '../../todo/entities/todo.entity'
+import { UserEntity } from 'src/user/entities/user.entity'
 
 @Entity('List')
 @ObjectType('List')
@@ -19,23 +19,23 @@ export class ListEntity {
   @Field(type => ID)
   @PrimaryGeneratedColumn({ type: 'uuid' })
   @Generated('uuid')
-  readonly id: ObjectID;
+  readonly id: ObjectID
 
   @Field()
   @Column({ default: '' })
-  text: string;
+  text: string
 
   @Field()
   @CreateDateColumn({ type: 'timestamp' })
-  createdAt: Date;
+  createdAt: Date
 
   @Field()
   @UpdateDateColumn({ type: 'timestamp', nullable: true })
-  updatedAt?: Date;
+  updatedAt?: Date
 
   @Field()
   @Column({ default: true })
-  active: boolean;
+  active: boolean
 
   @Field(type => [TodoEntity])
   @OneToMany(
@@ -43,12 +43,12 @@ export class ListEntity {
     todo => todo.list,
     { cascade: ['update'], eager: true },
   )
-  todos: TodoEntity[];
+  todos: TodoEntity[]
 
   @Field(type => UserEntity)
   @ManyToOne(
     type => UserEntity,
     user => user.lists,
   )
-  user: UserEntity;
+  user: UserEntity
 }

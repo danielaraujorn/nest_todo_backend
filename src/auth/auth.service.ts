@@ -1,33 +1,33 @@
-import { Injectable, Logger } from '@nestjs/common';
-import { UserService } from 'src/user/user.service';
-import { CreateUserDto } from 'src/user/dto/createUser.dto';
-import { UserEntity } from 'src/user/entities/user.entity';
-import * as jwt from 'jsonwebtoken';
-import { AuthStatusDto } from './dto/authStatus.dto';
-import { compare as bcryptCompare } from 'bcrypt';
+import { Injectable, Logger } from '@nestjs/common'
+import { UserService } from 'src/user/user.service'
+import { CreateUserDto } from 'src/user/dto/createUser.dto'
+import { UserEntity } from 'src/user/entities/user.entity'
+import * as jwt from 'jsonwebtoken'
+import { AuthStatusDto } from './dto/authStatus.dto'
+import { compare as bcryptCompare } from 'bcrypt'
 
 @Injectable()
 export class AuthService {
   constructor(private readonly userService: UserService) {}
-  private readonly logger = new Logger(AuthService.name);
+  private readonly logger = new Logger(AuthService.name)
 
   async register(user: CreateUserDto) {
     let status: AuthStatusDto = {
       success: true,
       message: 'user register',
-    };
+    }
     try {
-      await this.userService.register(user);
+      await this.userService.register(user)
     } catch (err) {
       // debug(err);
-      status = { success: false, message: err };
+      status = { success: false, message: err }
     }
-    return status;
+    return status
   }
 
   createToken(user: UserEntity) {
     // debug('get the expiration');
-    const expiresIn = 3600;
+    const expiresIn = 3600
     // debug('sign the token');
     // debug(user);
 
@@ -40,27 +40,27 @@ export class AuthService {
       },
       process.env.JWT_SECRET,
       { expiresIn },
-    );
+    )
     // debug('return the token');
     // debug(accessToken);
     return {
       expiresIn,
       accessToken,
-    };
+    }
   }
 
   async validateUserToken(payload): Promise<UserEntity> {
-    return await this.userService.findById(payload.id);
+    return await this.userService.findById(payload.id)
   }
 
   async validateUser(email: string, password: string): Promise<UserEntity> {
-    const user = await this.userService.findByEmail(email);
+    const user = await this.userService.findByEmail(email)
 
     if (user && (await bcryptCompare(password, user.password))) {
-      this.logger.log('password check success');
-      return user;
+      this.logger.log('password check success')
+      return user
     }
 
-    return null;
+    return null
   }
 }

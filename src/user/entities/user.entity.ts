@@ -1,4 +1,4 @@
-import { Field, ID, ObjectType } from '@nestjs/graphql';
+import { Field, ID, ObjectType } from '@nestjs/graphql'
 import {
   Column,
   Entity,
@@ -9,8 +9,8 @@ import {
   Generated,
   OneToMany,
   Unique,
-} from 'typeorm';
-import { ListEntity } from 'src/list/entities/list.entity';
+} from 'typeorm'
+import { ListEntity } from 'src/list/entities/list.entity'
 
 @Entity('User')
 @ObjectType('User')
@@ -19,30 +19,30 @@ export class UserEntity {
   @Field(type => ID)
   @PrimaryGeneratedColumn({ type: 'uuid' })
   @Generated('uuid')
-  readonly id: ObjectID;
+  readonly id: ObjectID
 
   @Field()
   @Column()
-  email: string;
+  email: string
 
   @Field()
   @Column()
-  firstName: string;
+  firstName: string
 
   @Field()
   @Column({ nullable: true })
-  lastName?: string;
+  lastName?: string
 
   @Column()
-  password: string;
+  password: string
 
   @Field()
   @CreateDateColumn({ type: 'timestamp' })
-  createdAt: Date;
+  createdAt: Date
 
   @Field()
   @UpdateDateColumn({ type: 'timestamp', nullable: true })
-  updatedAt?: Date;
+  updatedAt?: Date
 
   @Field(type => [ListEntity])
   @OneToMany(
@@ -50,5 +50,5 @@ export class UserEntity {
     list => list.user,
     { cascade: ['update'], eager: true },
   )
-  lists: ListEntity[];
+  lists: ListEntity[]
 }

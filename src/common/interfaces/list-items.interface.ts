@@ -1,4 +1,4 @@
 export interface IListItems {
-  items: any[];
-  total: number;
+  items: any[]
+  total: number
 }

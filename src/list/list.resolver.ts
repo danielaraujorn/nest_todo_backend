@@ -1,14 +1,14 @@
-import { NotFoundException, UseGuards } from '@nestjs/common';
-import { Query, Mutation, Args, Resolver, ID } from '@nestjs/graphql';
-import { ListEntity } from './entities/list.entity';
-import { ListListsEntity } from './entities/listLists.entity';
-import { CreateListDto } from './dto/createList.dto';
-import { UpsertListDto } from './dto/upsertList.dto';
-import { FindListsDto } from './dto/findLists.dto';
-import { ListService } from './list.service';
-import { GqlAuthGuard } from 'src/auth/decorators/gqlAuthGuard.decorator';
-import { CurrentUser } from 'src/auth/decorators/currentUser.decorator';
-import { UserEntity } from 'src/user/entities/user.entity';
+import { NotFoundException, UseGuards } from '@nestjs/common'
+import { Query, Mutation, Args, Resolver, ID } from '@nestjs/graphql'
+import { ListEntity } from './entities/list.entity'
+import { ListListsEntity } from './entities/listLists.entity'
+import { CreateListDto } from './dto/createList.dto'
+import { UpsertListDto } from './dto/upsertList.dto'
+import { FindListsDto } from './dto/findLists.dto'
+import { ListService } from './list.service'
+import { GqlAuthGuard } from 'src/auth/decorators/gqlAuthGuard.decorator'
+import { CurrentUser } from 'src/auth/decorators/currentUser.decorator'
+import { UserEntity } from 'src/user/entities/user.entity'
 
 @Resolver(of => ListEntity)
 export class ListResolver {
@@ -20,11 +20,11 @@ export class ListResolver {
     @CurrentUser() user: UserEntity,
     @Args('id') id: string,
   ): Promise<ListEntity> {
-    const list = await this.service.findById(user, id);
+    const list = await this.service.findById(user, id)
     if (!list) {
-      throw new NotFoundException(id);
+      throw new NotFoundException(id)
     }
-    return list;
+    return list
   }
 
   @UseGuards(GqlAuthGuard)
@@ -33,7 +33,7 @@ export class ListResolver {
     @CurrentUser() user: UserEntity,
     @Args() args: FindListsDto,
   ): Promise<ListListsEntity> {
-    return this.service.find(user, args);
+    return this.service.find(user, args)
   }
 
   @UseGuards(GqlAuthGuard)
@@ -42,9 +42,9 @@ export class ListResolver {
     @CurrentUser() user: UserEntity,
     @Args() args: UpsertListDto,
   ): Promise<ListEntity> {
-    const { id, listInput }: { id?: string; listInput: CreateListDto } = args;
+    const { id, listInput }: { id?: string; listInput: CreateListDto } = args
 
-    return await this.service.upsert(user, id, listInput);
+    return await this.service.upsert(user, id, listInput)
   }
 
   @UseGuards(GqlAuthGuard)
@@ -53,6 +53,6 @@ export class ListResolver {
     @CurrentUser() user: UserEntity,
     @Args({ name: 'id', type: () => ID }) id: string,
   ): Promise<boolean> {
-    return this.service.deactivate(user, id);
+    return this.service.deactivate(user, id)
   }
 }

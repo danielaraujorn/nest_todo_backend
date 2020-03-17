@@ -1,14 +1,14 @@
-import { Field, ObjectType } from '@nestjs/graphql';
-import { TokenDto } from './token.dto';
+import { Field, ObjectType } from '@nestjs/graphql'
+import { TokenDto } from './token.dto'
 
 @ObjectType()
 export class AuthStatusDto {
   @Field()
-  success: boolean;
+  success: boolean
 
   @Field({ nullable: true })
-  message?: string;
+  message?: string
 
   @Field(type => TokenDto, { nullable: true })
-  token?: TokenDto;
+  token?: TokenDto
 }

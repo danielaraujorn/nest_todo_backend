@@ -1,28 +1,28 @@
-import { Injectable } from '@nestjs/common';
-import { ListEntity } from './entities/list.entity';
-import { FindListsDto } from './dto/findLists.dto';
-import { CreateListDto } from './dto/createList.dto';
-import { ListListsEntity } from './entities/listLists.entity';
-import { ListRepository } from './repositories/list.repository';
-import { findOrder } from 'src/common/types/find-order.type';
-import { UserEntity } from 'src/user/entities/user.entity';
+import { Injectable } from '@nestjs/common'
+import { ListEntity } from './entities/list.entity'
+import { FindListsDto } from './dto/findLists.dto'
+import { CreateListDto } from './dto/createList.dto'
+import { ListListsEntity } from './entities/listLists.entity'
+import { ListRepository } from './repositories/list.repository'
+import { findOrder } from 'src/common/types/find-order.type'
+import { UserEntity } from 'src/user/entities/user.entity'
 
 @Injectable()
 export class ListService {
   constructor(private readonly listRepository: ListRepository) {}
 
   async findById(user: UserEntity, id: string): Promise<ListEntity> {
-    return await this.listRepository.findOne({ id, user: { id: user.id } });
+    return await this.listRepository.findOne({ id, user: { id: user.id } })
   }
 
   async find(user: UserEntity, params: FindListsDto): Promise<ListListsEntity> {
-    const { skip, take, ids, order, fieldSort } = params;
+    const { skip, take, ids, order, fieldSort } = params
     const $order: findOrder = {
       [fieldSort]: order,
-    };
+    }
 
-    const idsWhere = ids ? { _id: { $in: ids } } : {};
-    const $where = { ...idsWhere, user: { id: user.id } };
+    const idsWhere = ids ? { _id: { $in: ids } } : {}
+    const $where = { ...idsWhere, user: { id: user.id } }
 
     const [items, total]: [ListEntity[], number] = await Promise.all([
       this.listRepository.find({
@@ -35,12 +35,12 @@ export class ListService {
       this.listRepository.count({
         where: $where,
       }),
-    ]);
+    ])
 
     return {
       items,
       total,
-    };
+    }
   }
 
   async upsert(
@@ -55,24 +55,24 @@ export class ListService {
             relations: ['list'],
           },
         )
-      : new ListEntity();
+      : new ListEntity()
 
     await this.listRepository.save({
       ...newList,
       ...list,
       user,
-    });
+    })
 
     return await this.listRepository.findOne(newList.id, {
       relations: ['todos', 'user'],
-    });
+    })
   }
 
   async deactivate(user: UserEntity, id: string): Promise<boolean> {
     const list: ListEntity = await this.listRepository.findOne({
       id,
       user: { id: user.id },
-    });
-    return Boolean(this.listRepository.save({ ...list, active: false }));
+    })
+    return Boolean(this.listRepository.save({ ...list, active: false }))
   }
 }

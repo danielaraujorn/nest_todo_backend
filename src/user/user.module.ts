@@ -1,8 +1,8 @@
-import { Module } from '@nestjs/common';
-import { UserService } from './user.service';
-import { UserResolver } from './user.resolver';
-import { TypeOrmModule } from '@nestjs/typeorm';
-import { UserRepository } from './repositories/user.repository';
+import { Module } from '@nestjs/common'
+import { UserService } from './user.service'
+import { UserResolver } from './user.resolver'
+import { TypeOrmModule } from '@nestjs/typeorm'
+import { UserRepository } from './repositories/user.repository'
 
 @Module({
   imports: [TypeOrmModule.forFeature([UserRepository])],

@@ -12,9 +12,9 @@
 ## Steps to start server
 
 - You'll need to create a `.env` file as in `.env.sample`
-- npm install
-- docker-compose up -d
-- npm run start:dev
+- `npm install`
+- `docker-compose up -d`
+- `npm run start:dev`
 - [Link to access your playground](http://localhost:3000/graphql)
 
 ## After register or login

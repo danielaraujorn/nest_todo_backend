@@ -1,1 +1,1 @@
-export type order = 'ASC' | 'DESC' | 1 | -1;
+export type order = 'ASC' | 'DESC' | 1 | -1

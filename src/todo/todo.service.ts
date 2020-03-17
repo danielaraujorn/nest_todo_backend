@@ -1,13 +1,13 @@
-import { Injectable } from '@nestjs/common';
-import { TodoEntity } from './entities/todo.entity';
-import { CreateTodoDto } from './dto/createTodo.dto';
-import { TodoRepository } from './repositories/todo.repository';
-import { ListRepository } from 'src/list/repositories/list.repository';
-import { ListEntity } from 'src/list/entities/list.entity';
-import { FindTodosDto } from './dto/findTodos.dto';
-import { ListTodosEntity } from './entities/listTodos.entity';
-import { findOrder } from 'src/common/types/find-order.type';
-import { UserEntity } from 'src/user/entities/user.entity';
+import { Injectable } from '@nestjs/common'
+import { TodoEntity } from './entities/todo.entity'
+import { CreateTodoDto } from './dto/createTodo.dto'
+import { TodoRepository } from './repositories/todo.repository'
+import { ListRepository } from 'src/list/repositories/list.repository'
+import { ListEntity } from 'src/list/entities/list.entity'
+import { FindTodosDto } from './dto/findTodos.dto'
+import { ListTodosEntity } from './entities/listTodos.entity'
+import { findOrder } from 'src/common/types/find-order.type'
+import { UserEntity } from 'src/user/entities/user.entity'
 
 @Injectable()
 export class TodoService {
@@ -20,7 +20,7 @@ export class TodoService {
     return await this.todoRepository.findOne(
       { id, list: { user: { id: user.id } } },
       { relations: ['list'] },
-    );
+    )
   }
 
   async upsert(
@@ -28,7 +28,7 @@ export class TodoService {
     id: string | undefined,
     todo: CreateTodoDto,
   ): Promise<TodoEntity> {
-    const { listId, ...restTodo }: { listId?: string } = todo;
+    const { listId, ...restTodo }: { listId?: string } = todo
 
     const newTodo: TodoEntity = id
       ? await this.todoRepository.findOne(
@@ -37,43 +37,43 @@ export class TodoService {
             relations: ['list'],
           },
         )
-      : new TodoEntity();
+      : new TodoEntity()
 
     if (listId) {
       const list: ListEntity = await this.listRepository.findOne({
         id: listId,
         user: { id: user.id },
-      });
-      newTodo.list = list;
+      })
+      newTodo.list = list
     }
 
     await this.todoRepository.save({
       ...newTodo,
       ...restTodo,
-    });
+    })
 
     return await this.todoRepository.findOne(newTodo.id, {
       relations: ['list'],
-    });
+    })
   }
 
   async findTodos(
     user: UserEntity,
     params: FindTodosDto,
   ): Promise<ListTodosEntity> {
-    const { skip, take, ids, listId, order, fieldSort } = params;
+    const { skip, take, ids, listId, order, fieldSort } = params
 
     const $order: findOrder = {
       [fieldSort]: order,
-    };
+    }
 
-    const idsWhere = ids ? { _id: { $in: ids } } : {};
-    const listIdWhere = listId ? { id: listId } : {};
-    const userWhere = { list: { ...listIdWhere, user: { id: user.id } } };
+    const idsWhere = ids ? { _id: { $in: ids } } : {}
+    const listIdWhere = listId ? { id: listId } : {}
+    const userWhere = { list: { ...listIdWhere, user: { id: user.id } } }
     const $where = {
       ...idsWhere,
       ...userWhere,
-    };
+    }
 
     const [items, total]: [TodoEntity[], number] = await Promise.all([
       this.todoRepository.find({
@@ -84,11 +84,11 @@ export class TodoService {
         order: $order,
       }),
       this.todoRepository.count({ where: $where }),
-    ]);
+    ])
 
     return {
       items,
       total,
-    };
+    }
   }
 }

@@ -1,5 +1,5 @@
-import { order } from './order.type';
+import { order } from './order.type'
 
 export type findOrder = {
   [P in keyof any]?: order;
-};
+}

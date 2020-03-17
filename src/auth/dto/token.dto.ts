@@ -1,10 +1,10 @@
-import { Field, ObjectType } from '@nestjs/graphql';
+import { Field, ObjectType } from '@nestjs/graphql'
 
 @ObjectType()
 export class TokenDto {
   @Field()
-  expiresIn: number;
+  expiresIn: number
 
   @Field()
-  accessToken: string;
+  accessToken: string
 }

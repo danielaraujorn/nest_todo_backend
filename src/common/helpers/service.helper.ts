@@ -1,5 +1,5 @@
-import { Repository } from 'typeorm';
-import { Injectable } from '@nestjs/common';
+import { Repository } from 'typeorm'
+import { Injectable } from '@nestjs/common'
 
 @Injectable()
 export class ServiceHelper {
@@ -12,9 +12,9 @@ export class ServiceHelper {
       return {
         ...(await repository.findOne(id)),
         ...fields,
-      };
+      }
     }
 
-    return repository.create(fields);
+    return repository.create(fields)
   }
 }

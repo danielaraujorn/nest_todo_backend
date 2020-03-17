@@ -5,7 +5,7 @@
     "no-unused-expression": true
   },
   "rules": {
-    "semicolon": false,
+    "semicolon": [true, "never"],
     "quotemark": [true, "single"],
     "max-line-length": [true, 150],
     "interface-name": [false],
