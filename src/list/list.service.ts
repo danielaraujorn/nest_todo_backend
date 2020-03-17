@@ -5,21 +5,24 @@ import { CreateListDto } from './dto/createList.dto';
 import { ListListsEntity } from './entities/listLists.entity';
 import { ListRepository } from './repositories/list.repository';
 import { findOrder } from 'src/common/types/find-order.type';
+import { UserEntity } from 'src/user/entities/user.entity';
 
 @Injectable()
 export class ListService {
   constructor(private readonly listRepository: ListRepository) {}
 
-  async findById(id: string): Promise<ListEntity> {
-    return await this.listRepository.findOne(id);
+  async findById(user: UserEntity, id: string): Promise<ListEntity> {
+    return await this.listRepository.findOne({ id, user: { id: user.id } });
   }
 
-  async find(params: FindListsDto): Promise<ListListsEntity> {
+  async find(user: UserEntity, params: FindListsDto): Promise<ListListsEntity> {
     const { skip, take, ids, order, fieldSort } = params;
     const $order: findOrder = {
       [fieldSort]: order,
     };
-    const $where = ids ? { _id: { $in: ids } } : undefined;
+
+    const idsWhere = ids ? { _id: { $in: ids } } : {};
+    const $where = { ...idsWhere, user: { id: user.id } };
 
     const [items, total]: [ListEntity[], number] = await Promise.all([
       this.listRepository.find({
@@ -41,27 +44,35 @@ export class ListService {
   }
 
   async upsert(
+    user: UserEntity,
     id: string | undefined,
     list: CreateListDto,
   ): Promise<ListEntity> {
     const newList: ListEntity = id
-      ? await this.listRepository.findOne(id, {
-          relations: ['list'],
-        })
+      ? await this.listRepository.findOne(
+          { id, user: { id: user.id } },
+          {
+            relations: ['list'],
+          },
+        )
       : new ListEntity();
 
     await this.listRepository.save({
       ...newList,
       ...list,
+      user,
     });
 
     return await this.listRepository.findOne(newList.id, {
-      relations: ['todos'],
+      relations: ['todos', 'user'],
     });
   }
 
-  async deactivate(id: string): Promise<boolean> {
-    const list: ListEntity = await this.listRepository.findOne(id);
+  async deactivate(user: UserEntity, id: string): Promise<boolean> {
+    const list: ListEntity = await this.listRepository.findOne({
+      id,
+      user: { id: user.id },
+    });
     return Boolean(this.listRepository.save({ ...list, active: false }));
   }
 }

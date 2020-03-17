@@ -5,25 +5,36 @@ import {
   ObjectID,
   CreateDateColumn,
   UpdateDateColumn,
-  OneToMany,
   PrimaryGeneratedColumn,
   Generated,
-  ManyToOne,
+  OneToMany,
+  Unique,
 } from 'typeorm';
-import { TodoEntity } from '../../todo/entities/todo.entity';
-import { UserEntity } from 'src/user/entities/user.entity';
+import { ListEntity } from 'src/list/entities/list.entity';
 
-@Entity('List')
-@ObjectType('List')
-export class ListEntity {
+@Entity('User')
+@ObjectType('User')
+@Unique('UQ_NAMES', ['email'])
+export class UserEntity {
   @Field(type => ID)
   @PrimaryGeneratedColumn({ type: 'uuid' })
   @Generated('uuid')
   readonly id: ObjectID;
 
   @Field()
-  @Column({ default: '' })
-  text: string;
+  @Column()
+  email: string;
+
+  @Field()
+  @Column()
+  firstName: string;
+
+  @Field()
+  @Column({ nullable: true })
+  lastName?: string;
+
+  @Column()
+  password: string;
 
   @Field()
   @CreateDateColumn({ type: 'timestamp' })
@@ -33,22 +44,11 @@ export class ListEntity {
   @UpdateDateColumn({ type: 'timestamp', nullable: true })
   updatedAt?: Date;
 
-  @Field()
-  @Column({ default: true })
-  active: boolean;
-
-  @Field(type => [TodoEntity])
+  @Field(type => [ListEntity])
   @OneToMany(
-    type => TodoEntity,
-    todo => todo.list,
+    type => ListEntity,
+    list => list.user,
     { cascade: ['update'], eager: true },
   )
-  todos: TodoEntity[];
-
-  @Field(type => UserEntity)
-  @ManyToOne(
-    type => UserEntity,
-    user => user.lists,
-  )
-  user: UserEntity;
+  lists: ListEntity[];
 }

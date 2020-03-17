@@ -2,6 +2,12 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
+type AuthStatusDto {
+  success: Boolean!
+  message: String
+  token: TokenDto
+}
+
 input CreateListInput {
   text: String!
 }
@@ -24,6 +30,7 @@ type List {
   updatedAt: DateTime!
   active: Boolean!
   todos: [Todo!]!
+  user: User!
 }
 
 type ListLists {
@@ -37,9 +44,11 @@ type ListTodos {
 }
 
 type Mutation {
-  saveList(id: ID, listInput: CreateListInput!): List!
+  upsertList(id: ID, listInput: CreateListInput!): List!
   deactivateList(id: ID!): Boolean!
   saveTodo(id: ID, todoInput: CreateTodoInput!): Todo!
+  register(firstName: String!, lastName: String, email: String!, password: String!): AuthStatusDto!
+  login(email: String!, password: String!): AuthStatusDto!
 }
 
 type Query {
@@ -47,6 +56,7 @@ type Query {
   lists(skip: Int = 0, take: Int = 50, ids: [ID!], order: String = "DESC", fieldSort: String = "updatedAt"): ListLists!
   todo(id: String!): Todo!
   todos(skip: Int = 0, take: Int = 50, ids: [ID!], listId: ID, order: String = "DESC", fieldSort: String = "updatedAt"): ListTodos!
+  user(id: String!): User!
 }
 
 type Todo {
@@ -56,4 +66,19 @@ type Todo {
   updatedAt: DateTime!
   completed: Boolean!
   list: List!
+}
+
+type TokenDto {
+  expiresIn: Float!
+  accessToken: String!
+}
+
+type User {
+  id: ID!
+  email: String!
+  firstName: String!
+  lastName: String!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  lists: [List!]!
 }

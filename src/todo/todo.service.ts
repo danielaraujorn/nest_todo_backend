@@ -7,6 +7,7 @@ import { ListEntity } from 'src/list/entities/list.entity';
 import { FindTodosDto } from './dto/findTodos.dto';
 import { ListTodosEntity } from './entities/listTodos.entity';
 import { findOrder } from 'src/common/types/find-order.type';
+import { UserEntity } from 'src/user/entities/user.entity';
 
 @Injectable()
 export class TodoService {
@@ -15,24 +16,34 @@ export class TodoService {
     private readonly listRepository: ListRepository,
   ) {}
 
-  async findById(id: string): Promise<TodoEntity> {
-    return await this.todoRepository.findOne(id, { relations: ['list'] });
+  async findById(user: UserEntity, id: string): Promise<TodoEntity> {
+    return await this.todoRepository.findOne(
+      { id, list: { user: { id: user.id } } },
+      { relations: ['list'] },
+    );
   }
 
   async upsert(
+    user: UserEntity,
     id: string | undefined,
     todo: CreateTodoDto,
   ): Promise<TodoEntity> {
     const { listId, ...restTodo }: { listId?: string } = todo;
 
     const newTodo: TodoEntity = id
-      ? await this.todoRepository.findOne(id, {
-          relations: ['list'],
-        })
+      ? await this.todoRepository.findOne(
+          { id, list: { user: { id: user.id } } },
+          {
+            relations: ['list'],
+          },
+        )
       : new TodoEntity();
 
     if (listId) {
-      const list: ListEntity = await this.listRepository.findOne(listId);
+      const list: ListEntity = await this.listRepository.findOne({
+        id: listId,
+        user: { id: user.id },
+      });
       newTodo.list = list;
     }
 
@@ -46,16 +57,22 @@ export class TodoService {
     });
   }
 
-  async findTodos(params: FindTodosDto): Promise<ListTodosEntity> {
+  async findTodos(
+    user: UserEntity,
+    params: FindTodosDto,
+  ): Promise<ListTodosEntity> {
     const { skip, take, ids, listId, order, fieldSort } = params;
 
     const $order: findOrder = {
       [fieldSort]: order,
     };
 
+    const idsWhere = ids ? { _id: { $in: ids } } : {};
+    const listIdWhere = listId ? { id: listId } : {};
+    const userWhere = { list: { ...listIdWhere, user: { id: user.id } } };
     const $where = {
-      _id: { $in: ids },
-      list: { id: listId },
+      ...idsWhere,
+      ...userWhere,
     };
 
     const [items, total]: [TodoEntity[], number] = await Promise.all([
