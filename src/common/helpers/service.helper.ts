@@ -1,6 +1,5 @@
 import { Repository } from 'typeorm';
 import { Injectable } from '@nestjs/common';
-import { IWhereIds } from '../interfaces/where-ids.interface';
 
 @Injectable()
 export class ServiceHelper {

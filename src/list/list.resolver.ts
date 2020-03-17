@@ -1,7 +1,5 @@
-import { ID } from '@nestjs/graphql';
 import { NotFoundException, UseGuards } from '@nestjs/common';
-import { AuthGuard } from '@nestjs/passport';
-import { Query, Mutation, Args, Resolver } from '@nestjs/graphql';
+import { Query, Mutation, Args, Resolver, ID } from '@nestjs/graphql';
 import { ListEntity } from './entities/list.entity';
 import { ListListsEntity } from './entities/listLists.entity';
 import { CreateListDto } from './dto/createList.dto';
@@ -33,21 +31,18 @@ export class ListResolver {
   @Query(returns => ListListsEntity)
   lists(
     @CurrentUser() user: UserEntity,
-    @Args() queryArgs: FindListsDto,
+    @Args() args: FindListsDto,
   ): Promise<ListListsEntity> {
-    return this.service.find(user, queryArgs);
+    return this.service.find(user, args);
   }
 
   @UseGuards(GqlAuthGuard)
   @Mutation(returns => ListEntity)
   async upsertList(
     @CurrentUser() user: UserEntity,
-    @Args() mutationArgs: UpsertListDto,
+    @Args() args: UpsertListDto,
   ): Promise<ListEntity> {
-    const {
-      id,
-      listInput,
-    }: { id?: string; listInput: CreateListDto } = mutationArgs;
+    const { id, listInput }: { id?: string; listInput: CreateListDto } = args;
 
     return await this.service.upsert(user, id, listInput);
   }

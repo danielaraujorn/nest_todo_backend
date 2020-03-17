@@ -6,6 +6,8 @@
 - Typeorm
 - Graphql
 - Postgres
+- JWT
+- Passport
 
 ## Steps to start server
 
@@ -15,7 +17,10 @@
 - npm run start:dev
 - [Link to access your playground](http://localhost:3000/graphql)
 
+## After register or login
+
+- Place your token in header like: `{Authorization:'Bearer <token>'}`
+
 ## Next steps
 
-- Authentication and authorization
 - Tests

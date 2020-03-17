@@ -1,4 +1,4 @@
-function TypeOrmConfig() {
+const TypeOrmConfig = () => {
   const { DB_USERNAME, DB_PASSWORD, DB_HOST, DB_PORT, DB_NAME } = process.env;
 
   const migrationsDir = '/db/migrations';
@@ -11,6 +11,6 @@ function TypeOrmConfig() {
     cli: { migrationsDir },
     synchronize: true,
   };
-}
+};
 
 module.exports = TypeOrmConfig();

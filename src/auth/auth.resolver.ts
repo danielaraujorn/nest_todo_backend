@@ -3,15 +3,11 @@ import { UserEntity } from 'src/user/entities/user.entity';
 import { AuthService } from './auth.service';
 import { CreateUserDto } from 'src/user/dto/createUser.dto';
 import { LoginUserDto } from './dto/loginUser.dto';
-import { UserService } from 'src/user/user.service';
 import { AuthStatusDto } from './dto/authStatus.dto';
 
 @Resolver(of => UserEntity)
 export class AuthResolver {
-  constructor(
-    private readonly service: AuthService,
-    private readonly userService: UserService,
-  ) {}
+  constructor(private readonly service: AuthService) {}
 
   @Mutation(returns => AuthStatusDto)
   async register(@Args() args: CreateUserDto): Promise<AuthStatusDto> {

@@ -4,8 +4,8 @@ import { ExecutionContextHost } from '@nestjs/core/helpers/execution-context-hos
 export const CurrentUser = createParamDecorator(
   (data, context: ExecutionContextHost) => {
     const [
-      root,
-      args,
+      ,
+      ,
       {
         req: { user },
       },

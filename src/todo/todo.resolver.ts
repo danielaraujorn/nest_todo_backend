@@ -31,21 +31,18 @@ export class TodoResolver {
   @Query(returns => ListTodosEntity)
   todos(
     @CurrentUser() user: UserEntity,
-    @Args() queryArgs: FindTodosDto,
+    @Args() args: FindTodosDto,
   ): Promise<ListTodosEntity> {
-    return this.service.findTodos(user, queryArgs);
+    return this.service.findTodos(user, args);
   }
 
   @UseGuards(GqlAuthGuard)
   @Mutation(returns => TodoEntity)
   async saveTodo(
     @CurrentUser() user: UserEntity,
-    @Args() mutationArgs: UpsertTodoDto,
+    @Args() args: UpsertTodoDto,
   ): Promise<TodoEntity> {
-    const {
-      id,
-      todoInput,
-    }: { id?: string; todoInput: CreateTodoDto } = mutationArgs;
+    const { id, todoInput }: { id?: string; todoInput: CreateTodoDto } = args;
 
     return await this.service.upsert(user, id, todoInput);
   }
