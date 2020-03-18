@@ -1,6 +1,6 @@
 import { Max, Min, IsArray } from 'class-validator'
 import { ArgsType, Field, Int, ID } from '@nestjs/graphql'
-import { order } from 'src/common/types/order.type'
+import { order } from '../../common/types/order.type'
 
 @ArgsType()
 export class FindTodosDto {

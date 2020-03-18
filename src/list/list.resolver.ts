@@ -6,9 +6,9 @@ import { CreateListDto } from './dto/createList.dto'
 import { UpsertListDto } from './dto/upsertList.dto'
 import { FindListsDto } from './dto/findLists.dto'
 import { ListService } from './list.service'
-import { GqlAuthGuard } from 'src/auth/decorators/gqlAuthGuard.decorator'
-import { CurrentUser } from 'src/auth/decorators/currentUser.decorator'
-import { UserEntity } from 'src/user/entities/user.entity'
+import { GqlAuthGuard } from '../auth/decorators/gqlAuthGuard.decorator'
+import { CurrentUser } from '../auth/decorators/currentUser.decorator'
+import { UserEntity } from '../user/entities/user.entity'
 
 @Resolver(() => ListEntity)
 export class ListResolver {

@@ -1,17 +1,21 @@
-import { NotFoundException } from '@nestjs/common'
-import { Query, Args, Resolver } from '@nestjs/graphql'
+import { NotFoundException, UseGuards } from '@nestjs/common'
+import { Query, Resolver } from '@nestjs/graphql'
 import { UserEntity } from './entities/user.entity'
 import { UserService } from './user.service'
+import { CurrentUser } from '../auth/decorators/currentUser.decorator'
+import { GqlAuthGuard } from '../auth/decorators/gqlAuthGuard.decorator'
+import { UserRO } from './users.ro'
 
 @Resolver(() => UserEntity)
 export class UserResolver {
   constructor(private readonly service: UserService) {}
 
+  @UseGuards(GqlAuthGuard)
   @Query(() => UserEntity)
-  async user(@Args('id') id: string): Promise<UserEntity> {
-    const user = await this.service.findById(id)
-    if (!user) {
-      throw new NotFoundException(id)
+  async ownUser(@CurrentUser() user): Promise<UserRO> {
+    const ownUser = await this.service.findById(user.id)
+    if (!ownUser) {
+      throw new NotFoundException(user.id)
     }
     return user
   }

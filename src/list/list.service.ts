@@ -4,8 +4,8 @@ import { FindListsDto } from './dto/findLists.dto'
 import { CreateListDto } from './dto/createList.dto'
 import { ListListsEntity } from './entities/listLists.entity'
 import { ListRepository } from './repositories/list.repository'
-import { findOrder } from 'src/common/types/find-order.type'
-import { UserEntity } from 'src/user/entities/user.entity'
+import { findOrder } from '../common/types/find-order.type'
+import { UserEntity } from '../user/entities/user.entity'
 
 @Injectable()
 export class ListService {

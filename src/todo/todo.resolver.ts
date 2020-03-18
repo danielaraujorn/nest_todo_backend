@@ -6,9 +6,9 @@ import { UpsertTodoDto } from './dto/upsertTodo.dto'
 import { TodoService } from './todo.service'
 import { ListTodosEntity } from './entities/listTodos.entity'
 import { FindTodosDto } from './dto/findTodos.dto'
-import { GqlAuthGuard } from 'src/auth/decorators/gqlAuthGuard.decorator'
-import { CurrentUser } from 'src/auth/decorators/currentUser.decorator'
-import { UserEntity } from 'src/user/entities/user.entity'
+import { GqlAuthGuard } from '../auth/decorators/gqlAuthGuard.decorator'
+import { CurrentUser } from '../auth/decorators/currentUser.decorator'
+import { UserEntity } from '../user/entities/user.entity'
 
 @Resolver(() => TodoEntity)
 export class TodoResolver {

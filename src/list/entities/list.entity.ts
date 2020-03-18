@@ -11,7 +11,7 @@ import {
   ManyToOne,
 } from 'typeorm'
 import { TodoEntity } from '../../todo/entities/todo.entity'
-import { UserEntity } from 'src/user/entities/user.entity'
+import { UserEntity } from '../..//user/entities/user.entity'
 
 @Entity('List')
 @ObjectType('List')

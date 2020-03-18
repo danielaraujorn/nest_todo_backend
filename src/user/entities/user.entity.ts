@@ -10,7 +10,7 @@ import {
   OneToMany,
   Unique,
 } from 'typeorm'
-import { ListEntity } from 'src/list/entities/list.entity'
+import { ListEntity } from '../../list/entities/list.entity'
 
 @Entity('User')
 @ObjectType('User')

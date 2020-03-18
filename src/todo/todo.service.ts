@@ -2,12 +2,12 @@ import { Injectable } from '@nestjs/common'
 import { TodoEntity } from './entities/todo.entity'
 import { CreateTodoDto } from './dto/createTodo.dto'
 import { TodoRepository } from './repositories/todo.repository'
-import { ListRepository } from 'src/list/repositories/list.repository'
-import { ListEntity } from 'src/list/entities/list.entity'
+import { ListRepository } from '../list/repositories/list.repository'
+import { ListEntity } from '../list/entities/list.entity'
 import { FindTodosDto } from './dto/findTodos.dto'
 import { ListTodosEntity } from './entities/listTodos.entity'
-import { findOrder } from 'src/common/types/find-order.type'
-import { UserEntity } from 'src/user/entities/user.entity'
+import { findOrder } from '../common/types/find-order.type'
+import { UserEntity } from '../user/entities/user.entity'
 
 @Injectable()
 export class TodoService {

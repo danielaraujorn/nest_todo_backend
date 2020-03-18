@@ -56,7 +56,7 @@ type Query {
   lists(skip: Int = 0, take: Int = 50, ids: [ID!], order: String = "DESC", fieldSort: String = "updatedAt"): ListLists!
   todo(id: String!): Todo!
   todos(skip: Int = 0, take: Int = 50, ids: [ID!], listId: ID, order: String = "DESC", fieldSort: String = "updatedAt"): ListTodos!
-  user(id: String!): User!
+  ownUser: User!
 }
 
 type Todo {

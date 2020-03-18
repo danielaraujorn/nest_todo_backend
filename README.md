@@ -9,6 +9,9 @@
 - Passport
 - Postgres
 - Docker Compose
+- Tslint
+- Prettier
+- E2E tests
 
 ## Steps to start server
 
@@ -24,4 +27,4 @@
 
 ## Next steps
 
-- Tests
+- List and Todos E2E Tests

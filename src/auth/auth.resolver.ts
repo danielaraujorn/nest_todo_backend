@@ -1,7 +1,7 @@
 import { Mutation, Args, Resolver } from '@nestjs/graphql'
-import { UserEntity } from 'src/user/entities/user.entity'
+import { UserEntity } from '../user/entities/user.entity'
 import { AuthService } from './auth.service'
-import { CreateUserDto } from 'src/user/dto/createUser.dto'
+import { CreateUserDto } from '../user/dto/createUser.dto'
 import { LoginUserDto } from './dto/loginUser.dto'
 import { AuthStatusDto } from './dto/authStatus.dto'
 
