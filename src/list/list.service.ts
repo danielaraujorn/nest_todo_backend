@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common'
+import { Injectable, UnauthorizedException } from '@nestjs/common'
 import { ListEntity } from './entities/list.entity'
 import { FindListsDto } from './dto/findLists.dto'
 import { CreateListDto } from './dto/createList.dto'
@@ -46,33 +46,19 @@ export class ListService {
   async upsert(
     user: UserEntity,
     id: string | undefined,
-    list: CreateListDto,
+    newListInput: CreateListDto,
   ): Promise<ListEntity> {
-    const newList: ListEntity = id
-      ? await this.listRepository.findOne(
-          { id, user: { id: user.id } },
-          {
-            relations: ['list'],
-          },
-        )
-      : new ListEntity()
-
-    await this.listRepository.save({
-      ...newList,
-      ...list,
+    if (id) {
+      const list = await this.listRepository.findOne({
+        id,
+        user: { id: user.id },
+      })
+      if (!list) throw new UnauthorizedException()
+      return await this.listRepository.save({ ...list, ...newListInput, user })
+    }
+    return await this.listRepository.save({
+      ...newListInput,
       user,
     })
-
-    return await this.listRepository.findOne(newList.id, {
-      relations: ['todos', 'user'],
-    })
-  }
-
-  async deactivate(user: UserEntity, id: string): Promise<boolean> {
-    const list: ListEntity = await this.listRepository.findOne({
-      id,
-      user: { id: user.id },
-    })
-    return Boolean(this.listRepository.save({ ...list, active: false }))
   }
 }

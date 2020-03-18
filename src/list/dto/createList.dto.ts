@@ -4,4 +4,7 @@ import { Field, InputType } from '@nestjs/graphql'
 export class CreateListDto {
   @Field()
   text: string
+
+  @Field({ nullable: true })
+  active?: boolean
 }

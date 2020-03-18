@@ -1,17 +1,15 @@
 import * as request from 'supertest'
 
-export const createGqlAuthenticatedRequest = (app, token: string) => (
-  query: string,
-) =>
+export const gqlAuthenticatedRequest = (app, token: string, query: string) =>
   request(app.getHttpServer())
     .post('/graphql')
-    .set('Authetication', token)
+    .set('Authorization', 'Bearer ' + token)
     .send({
       operationName: null,
       query,
     })
 
-export const createGqlRequest = app => (query: string) =>
+export const gqlRequest = (app, query: string) =>
   request(app.getHttpServer())
     .post('/graphql')
     .send({

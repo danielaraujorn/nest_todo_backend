@@ -1,5 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing'
-import { createGqlRequest } from './utils/createGqlRequest'
+import { gqlRequest } from './utils/gqlRequest'
 import { AppModule } from '../src/app.module'
 import { CreateUserDto } from '../src/user/dto/createUser.dto'
 import { objectToItem } from './utils/objectToItem'
@@ -8,7 +8,6 @@ import { LoginUserDto } from '../src/auth/dto/loginUser.dto'
 
 describe('Auth Resolvers (e2e)', () => {
   let app
-  let request
 
   beforeAll(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
@@ -17,7 +16,6 @@ describe('Auth Resolvers (e2e)', () => {
 
     app = moduleFixture.createNestApplication()
     await app.init()
-    request = createGqlRequest(app)
   })
 
   afterAll(async () => {
@@ -44,7 +42,7 @@ describe('Auth Resolvers (e2e)', () => {
   `
 
   it('register', () =>
-    request(registerQuery)
+    gqlRequest(app, registerQuery)
       .expect(({ body }) => {
         const { success, message, token } = body.data.register
         expect(success).toBe(true)
@@ -55,8 +53,8 @@ describe('Auth Resolvers (e2e)', () => {
       })
       .expect(200))
 
-  it('register again the same', () =>
-    request(registerQuery)
+  it('register again with the same email', () =>
+    gqlRequest(app, registerQuery)
       .expect(({ body }) => {
         const { success, message } = body.data.register
         expect(success).toBe(false)
@@ -82,7 +80,7 @@ describe('Auth Resolvers (e2e)', () => {
           }
       }
     `
-    return request(query)
+    return gqlRequest(app, query)
       .expect(({ body }) => {
         const { success, message, token } = body.data.login
         expect(success).toBe(true)
@@ -94,7 +92,7 @@ describe('Auth Resolvers (e2e)', () => {
       .expect(200)
   })
 
-  it('bad login', () => {
+  it('login with wrong password', () => {
     const input: LoginUserDto = {
       email: createUser.email,
       password: createUser.password + '1',
@@ -112,11 +110,11 @@ describe('Auth Resolvers (e2e)', () => {
           }
       }
     `
-    return request(query)
+    return gqlRequest(app, query)
       .expect(({ body }) => {
         const { success, message } = body.data.login
         expect(success).toBe(false)
-        expect(message).toBeDefined
+        expect(message).toBeDefined()
       })
       .expect(200)
   })

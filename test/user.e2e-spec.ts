@@ -1,8 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing'
-import {
-  createGqlAuthenticatedRequest,
-  createGqlRequest,
-} from './utils/createGqlRequest'
+import { gqlAuthenticatedRequest, gqlRequest } from './utils/gqlRequest'
 import { AppModule } from '../src/app.module'
 import { CreateUserDto } from '../src/user/dto/createUser.dto'
 import { objectToItem } from './utils/objectToItem'
@@ -10,7 +7,7 @@ import { randomString } from './utils/randomString'
 
 describe('User Resolvers (e2e)', () => {
   let app
-  let request
+  let BearerToken
 
   const user = {
     firstName: randomString(),
@@ -38,19 +35,9 @@ describe('User Resolvers (e2e)', () => {
         }
       `
 
-    await createGqlRequest(app)(registerQuery).then(
-      ({
-        body: {
-          data: {
-            register: {
-              token: { accessToken },
-            },
-          },
-        },
-      }) => {
-        request = createGqlAuthenticatedRequest(app, accessToken)
-      },
-    )
+    await gqlRequest(app, registerQuery).then(({ body }) => {
+      BearerToken = body.data.register.token.accessToken
+    })
   })
 
   afterAll(async () => {
@@ -62,15 +49,31 @@ describe('User Resolvers (e2e)', () => {
             ownUser{
               id
               email
+              firstName
             }
         }
       `
-    request(query)
-      .expect(({ body }) => {
-        const { firstName, email } = body.data.register
+    return gqlAuthenticatedRequest(app, BearerToken, query).expect(
+      ({ body }) => {
+        const { firstName, email, id } = body.data.ownUser
+        expect(id).toBeDefined()
         expect(firstName).toBe(user.firstName)
         expect(email).toBe(user.email)
-      })
-      .expect(200)
+      },
+    )
+  })
+  it('ownUser not authenticated', () => {
+    const query = `
+        query{
+            ownUser{
+              id
+            }
+        }
+      `
+    return gqlRequest(app, query).expect(({ body }) => {
+      const { errors, data } = body
+      expect(errors).toBeDefined()
+      expect(data).toBeNull()
+    })
   })
 })

@@ -10,6 +10,7 @@ type AuthStatusDto {
 
 input CreateListInput {
   text: String!
+  active: Boolean
 }
 
 input CreateTodoInput {
@@ -45,7 +46,6 @@ type ListTodos {
 
 type Mutation {
   upsertList(id: ID, listInput: CreateListInput!): List!
-  deactivateList(id: ID!): Boolean!
   saveTodo(id: ID, todoInput: CreateTodoInput!): Todo!
   register(firstName: String!, lastName: String, email: String!, password: String!): AuthStatusDto!
   login(email: String!, password: String!): AuthStatusDto!
