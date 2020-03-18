@@ -14,7 +14,7 @@ import { ListEntity } from '../../list/entities/list.entity'
 @Entity('Todo')
 @ObjectType('Todo')
 export class TodoEntity {
-  @Field(type => ID)
+  @Field(() => ID)
   @PrimaryGeneratedColumn({ type: 'uuid' })
   @Generated('uuid')
   readonly id: ObjectID
@@ -35,9 +35,9 @@ export class TodoEntity {
   @Column({ default: false })
   completed: boolean
 
-  @Field(type => ListEntity)
+  @Field(() => ListEntity)
   @ManyToOne(
-    type => ListEntity,
+    () => ListEntity,
     list => list.todos,
   )
   list: ListEntity

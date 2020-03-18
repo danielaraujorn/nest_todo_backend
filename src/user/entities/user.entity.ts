@@ -16,7 +16,7 @@ import { ListEntity } from 'src/list/entities/list.entity'
 @ObjectType('User')
 @Unique('UQ_NAMES', ['email'])
 export class UserEntity {
-  @Field(type => ID)
+  @Field(() => ID)
   @PrimaryGeneratedColumn({ type: 'uuid' })
   @Generated('uuid')
   readonly id: ObjectID
@@ -44,9 +44,9 @@ export class UserEntity {
   @UpdateDateColumn({ type: 'timestamp', nullable: true })
   updatedAt?: Date
 
-  @Field(type => [ListEntity])
+  @Field(() => [ListEntity])
   @OneToMany(
-    type => ListEntity,
+    () => ListEntity,
     list => list.user,
     { cascade: ['update'], eager: true },
   )

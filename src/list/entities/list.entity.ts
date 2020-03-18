@@ -16,7 +16,7 @@ import { UserEntity } from 'src/user/entities/user.entity'
 @Entity('List')
 @ObjectType('List')
 export class ListEntity {
-  @Field(type => ID)
+  @Field(() => ID)
   @PrimaryGeneratedColumn({ type: 'uuid' })
   @Generated('uuid')
   readonly id: ObjectID
@@ -37,17 +37,17 @@ export class ListEntity {
   @Column({ default: true })
   active: boolean
 
-  @Field(type => [TodoEntity])
+  @Field(() => [TodoEntity])
   @OneToMany(
-    type => TodoEntity,
+    () => TodoEntity,
     todo => todo.list,
     { cascade: ['update'], eager: true },
   )
   todos: TodoEntity[]
 
-  @Field(type => UserEntity)
+  @Field(() => UserEntity)
   @ManyToOne(
-    type => UserEntity,
+    () => UserEntity,
     user => user.lists,
   )
   user: UserEntity

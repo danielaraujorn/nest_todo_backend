@@ -5,9 +5,10 @@
 - Nest
 - Typeorm
 - Graphql
-- Postgres
 - JWT
 - Passport
+- Postgres
+- Docker Compose
 
 ## Steps to start server
 

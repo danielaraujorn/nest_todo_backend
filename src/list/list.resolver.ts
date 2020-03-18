@@ -10,12 +10,12 @@ import { GqlAuthGuard } from 'src/auth/decorators/gqlAuthGuard.decorator'
 import { CurrentUser } from 'src/auth/decorators/currentUser.decorator'
 import { UserEntity } from 'src/user/entities/user.entity'
 
-@Resolver(of => ListEntity)
+@Resolver(() => ListEntity)
 export class ListResolver {
   constructor(private readonly service: ListService) {}
 
   @UseGuards(GqlAuthGuard)
-  @Query(returns => ListEntity)
+  @Query(() => ListEntity)
   async list(
     @CurrentUser() user: UserEntity,
     @Args('id') id: string,
@@ -28,7 +28,7 @@ export class ListResolver {
   }
 
   @UseGuards(GqlAuthGuard)
-  @Query(returns => ListListsEntity)
+  @Query(() => ListListsEntity)
   lists(
     @CurrentUser() user: UserEntity,
     @Args() args: FindListsDto,
@@ -37,7 +37,7 @@ export class ListResolver {
   }
 
   @UseGuards(GqlAuthGuard)
-  @Mutation(returns => ListEntity)
+  @Mutation(() => ListEntity)
   async upsertList(
     @CurrentUser() user: UserEntity,
     @Args() args: UpsertListDto,
@@ -48,7 +48,7 @@ export class ListResolver {
   }
 
   @UseGuards(GqlAuthGuard)
-  @Mutation(returns => Boolean)
+  @Mutation(() => Boolean)
   deactivateList(
     @CurrentUser() user: UserEntity,
     @Args({ name: 'id', type: () => ID }) id: string,

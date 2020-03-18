@@ -10,12 +10,12 @@ import { GqlAuthGuard } from 'src/auth/decorators/gqlAuthGuard.decorator'
 import { CurrentUser } from 'src/auth/decorators/currentUser.decorator'
 import { UserEntity } from 'src/user/entities/user.entity'
 
-@Resolver(of => TodoEntity)
+@Resolver(() => TodoEntity)
 export class TodoResolver {
   constructor(private readonly service: TodoService) {}
 
   @UseGuards(GqlAuthGuard)
-  @Query(returns => TodoEntity)
+  @Query(() => TodoEntity)
   async todo(
     @CurrentUser() user: UserEntity,
     @Args('id') id: string,
@@ -28,7 +28,7 @@ export class TodoResolver {
   }
 
   @UseGuards(GqlAuthGuard)
-  @Query(returns => ListTodosEntity)
+  @Query(() => ListTodosEntity)
   todos(
     @CurrentUser() user: UserEntity,
     @Args() args: FindTodosDto,
@@ -37,7 +37,7 @@ export class TodoResolver {
   }
 
   @UseGuards(GqlAuthGuard)
-  @Mutation(returns => TodoEntity)
+  @Mutation(() => TodoEntity)
   async saveTodo(
     @CurrentUser() user: UserEntity,
     @Args() args: UpsertTodoDto,

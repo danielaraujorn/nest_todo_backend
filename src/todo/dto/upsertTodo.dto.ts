@@ -4,7 +4,7 @@ import { CreateTodoDto } from './createTodo.dto'
 
 @ArgsType()
 export class UpsertTodoDto {
-  @Field(type => ID, { nullable: true })
+  @Field(() => ID, { nullable: true })
   @IsOptional()
   id?: string
 

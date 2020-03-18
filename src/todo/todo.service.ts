@@ -38,6 +38,7 @@ export class TodoService {
           },
         )
       : new TodoEntity()
+    if (!id && !listId) return undefined
 
     if (listId) {
       const list: ListEntity = await this.listRepository.findOne({

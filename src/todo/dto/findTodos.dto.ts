@@ -4,23 +4,23 @@ import { order } from 'src/common/types/order.type'
 
 @ArgsType()
 export class FindTodosDto {
-  @Field(type => Int)
+  @Field(() => Int)
   @Min(0)
   skip: number = 0
 
-  @Field(type => Int)
+  @Field(() => Int)
   @Min(1)
   @Max(50)
   take: number = 50
 
-  @Field(type => [ID], { nullable: true })
+  @Field(() => [ID], { nullable: true })
   @IsArray()
   ids?: string[]
 
-  @Field(type => ID, { nullable: true })
+  @Field(() => ID, { nullable: true })
   listId?: string
 
-  @Field(type => String, { nullable: true })
+  @Field(() => String, { nullable: true })
   order?: order = 'DESC'
 
   @Field({ nullable: true })

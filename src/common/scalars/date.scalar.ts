@@ -2,7 +2,7 @@ import { Validator } from 'class-validator'
 import { CustomScalar, Scalar } from '@nestjs/graphql'
 import { Kind } from 'graphql'
 
-@Scalar('Date', type => Date)
+@Scalar('Date', () => Date)
 export class DateScalar implements CustomScalar<number | string, Date> {
   description = 'Date custom scalar type'
 

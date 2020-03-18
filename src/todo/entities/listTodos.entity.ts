@@ -4,9 +4,9 @@ import { TodoEntity } from './todo.entity'
 
 @ObjectType('ListTodos')
 export class ListTodosEntity implements IListItems {
-  @Field(type => [TodoEntity])
+  @Field(() => [TodoEntity])
   items: TodoEntity[]
 
-  @Field(type => Int)
+  @Field(() => Int)
   total: number
 }

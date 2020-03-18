@@ -4,7 +4,7 @@ import { CreateUserDto } from './createUser.dto'
 
 @ArgsType()
 export class UpsertUserDto {
-  @Field(type => ID, { nullable: true })
+  @Field(() => ID, { nullable: true })
   @IsOptional()
   id?: string
 

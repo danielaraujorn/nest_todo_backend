@@ -9,6 +9,6 @@ export class AuthStatusDto {
   @Field({ nullable: true })
   message?: string
 
-  @Field(type => TokenDto, { nullable: true })
+  @Field(() => TokenDto, { nullable: true })
   token?: TokenDto
 }

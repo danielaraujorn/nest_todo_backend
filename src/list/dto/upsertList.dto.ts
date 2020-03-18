@@ -4,7 +4,7 @@ import { CreateListDto } from './createList.dto'
 
 @ArgsType()
 export class UpsertListDto {
-  @Field(type => ID, { nullable: true })
+  @Field(() => ID, { nullable: true })
   @IsOptional()
   id?: string
 

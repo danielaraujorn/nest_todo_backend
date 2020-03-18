@@ -10,7 +10,8 @@
     "outDir": "./dist",
     "baseUrl": "./",
     "noUnusedLocals": true,
-    "noUnusedParameters": true
+    "noUnusedParameters": true,
+    "plugins": [{ "name": "typescript-tslint-plugin" }]
   },
   "exclude": ["node_modules"]
 }
