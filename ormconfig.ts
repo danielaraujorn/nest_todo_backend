@@ -18,7 +18,7 @@ const TypeOrmConfig = () => {
   return {
     type: 'postgres',
     url,
-    entities: [__dirname + '/**/*.entity.ts'],
+    entities: [__dirname + '/**/*.entity.{ts,js}'],
     migrations: [migrationsDir + '/*.js'],
     cli: { migrationsDir },
     synchronize: true,
