@@ -1,5 +1,7 @@
 # Todo app back-end
 
+## [Online playground link](https://nest-todo-backend.herokuapp.com/graphql)
+
 ## Made using
 
 - Nest
