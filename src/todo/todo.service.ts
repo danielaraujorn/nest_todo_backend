@@ -1,9 +1,8 @@
-import { Injectable } from '@nestjs/common'
+import { Injectable, UnauthorizedException } from '@nestjs/common'
 import { TodoEntity } from './entities/todo.entity'
 import { CreateTodoDto } from './dto/createTodo.dto'
 import { TodoRepository } from './repositories/todo.repository'
 import { ListRepository } from '../list/repositories/list.repository'
-import { ListEntity } from '../list/entities/list.entity'
 import { FindTodosDto } from './dto/findTodos.dto'
 import { ListTodosEntity } from './entities/listTodos.entity'
 import { findOrder } from '../common/types/find-order.type'
@@ -28,34 +27,27 @@ export class TodoService {
     id: string | undefined,
     todo: CreateTodoDto,
   ): Promise<TodoEntity> {
-    const { listId, ...restTodo }: { listId?: string } = todo
+    const { listId, ...newTodoInput }: { listId?: string } = todo
 
-    const newTodo: TodoEntity = id
-      ? await this.todoRepository.findOne(
-          { id, list: { user: { id: user.id } } },
-          {
-            relations: ['list'],
-          },
-        )
-      : new TodoEntity()
-    if (!id && !listId) return undefined
+    const list = await this.listRepository.findOne({
+      id: listId,
+      user: { id: user.id },
+    })
 
-    if (listId) {
-      const list: ListEntity = await this.listRepository.findOne({
-        id: listId,
-        user: { id: user.id },
+    if (!list) throw new UnauthorizedException()
+
+    if (id) {
+      const { list: todoList, ...todo } = await this.todoRepository.findOne({
+        id,
       })
-      newTodo.list = list
+      if (!todo) throw new UnauthorizedException()
+      return await this.todoRepository.save({
+        list,
+        ...todo,
+        ...newTodoInput,
+      })
     }
-
-    await this.todoRepository.save({
-      ...newTodo,
-      ...restTodo,
-    })
-
-    return await this.todoRepository.findOne(newTodo.id, {
-      relations: ['list'],
-    })
+    return await this.todoRepository.save({ list, ...newTodoInput })
   }
 
   async findTodos(

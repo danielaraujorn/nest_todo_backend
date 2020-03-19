@@ -49,16 +49,20 @@ export class ListService {
     newListInput: CreateListDto,
   ): Promise<ListEntity> {
     if (id) {
-      const list = await this.listRepository.findOne({
-        id,
-        user: { id: user.id },
-      })
+      const list = await this.listRepository.findOne(
+        {
+          id,
+          user: { id: user.id },
+        },
+        { relations: ['todos'] },
+      )
       if (!list) throw new UnauthorizedException()
       return await this.listRepository.save({ ...list, ...newListInput, user })
     }
     return await this.listRepository.save({
       ...newListInput,
       user,
+      todos: [],
     })
   }
 }

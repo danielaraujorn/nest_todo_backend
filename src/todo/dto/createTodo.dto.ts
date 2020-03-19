@@ -5,8 +5,8 @@ export class CreateTodoDto {
   @Field({ nullable: true })
   text?: string
 
-  @Field(() => ID, { nullable: true })
-  listId?: string
+  @Field(() => ID)
+  listId: string
 
   @Field({ nullable: true })
   completed?: boolean

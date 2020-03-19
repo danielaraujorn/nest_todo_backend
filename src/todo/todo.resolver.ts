@@ -38,7 +38,7 @@ export class TodoResolver {
 
   @UseGuards(GqlAuthGuard)
   @Mutation(() => TodoEntity)
-  async saveTodo(
+  async upsertTodo(
     @CurrentUser() user: UserEntity,
     @Args() args: UpsertTodoDto,
   ): Promise<TodoEntity> {
