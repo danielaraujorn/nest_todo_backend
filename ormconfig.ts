@@ -1,11 +1,23 @@
 const TypeOrmConfig = () => {
-  const { DB_USERNAME, DB_PASSWORD, DB_HOST, DB_PORT, DB_NAME } = process.env
+  const {
+    DB_USERNAME,
+    DB_PASSWORD,
+    DB_HOST,
+    DB_PORT,
+    DB_NAME,
+    DATABASE_URL,
+  } = process.env
 
   const migrationsDir = '/db/migrations'
 
+  const url =
+    DATABASE_URL ||
+    `postgres://${DB_USERNAME}:${DB_PASSWORD}@${DB_HOST}:${DB_PORT}/${DB_NAME}`
+  console.log(url)
+
   return {
     type: 'postgres',
-    url: `postgres://${DB_USERNAME}:${DB_PASSWORD}@${DB_HOST}:${DB_PORT}/${DB_NAME}`,
+    url,
     entities: [__dirname + '/**/*.entity.ts'],
     migrations: [migrationsDir + '/*.js'],
     cli: { migrationsDir },
