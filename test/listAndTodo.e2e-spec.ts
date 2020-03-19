@@ -11,11 +11,11 @@ describe('Lists and Todos Resolvers (e2e)', () => {
   let app
   let BearerToken
   let secondBearerToken
-  let lists: Array<{
+  const lists: {
     id?: string
     text?: string
-    todos?: Array<{ id?: string }>
-  }> = [{ text: randomString(), todos: [] }, {}, {}]
+    todos?: { id?: string }[]
+  }[] = [{ text: randomString(), todos: [] }, {}, {}]
 
   const user = {
     firstName: randomString(),

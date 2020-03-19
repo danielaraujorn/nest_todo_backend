@@ -25,10 +25,8 @@ export class TodoService {
   async upsert(
     user: UserEntity,
     id: string | undefined,
-    todo: CreateTodoDto,
+    { listId, ...newTodoInput }: CreateTodoDto,
   ): Promise<TodoEntity> {
-    const { listId, ...newTodoInput }: { listId?: string } = todo
-
     const list = await this.listRepository.findOne({
       id: listId,
       user: { id: user.id },
@@ -43,13 +41,13 @@ export class TodoService {
       })
       if (!todo) throw new UnauthorizedException()
       return await this.todoRepository.save({
+        ...newTodoInput,
+        ...todo,
         list,
         user,
-        ...todo,
-        ...newTodoInput,
       })
     }
-    return await this.todoRepository.save({ list, user, ...newTodoInput })
+    return await this.todoRepository.save({ ...newTodoInput, list, user })
   }
 
   async findTodos(
