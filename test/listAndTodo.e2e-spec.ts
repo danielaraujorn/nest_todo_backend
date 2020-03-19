@@ -15,7 +15,7 @@ describe('Lists and Todos Resolvers (e2e)', () => {
     id?: string
     text?: string
     todos?: Array<{ id?: string }>
-  }> = [{ text: randomString(), todos: [] }, {}]
+  }> = [{ text: randomString(), todos: [] }, {}, {}]
 
   const user = {
     firstName: randomString(),
@@ -101,6 +101,36 @@ describe('Lists and Todos Resolvers (e2e)', () => {
     )
   })
 
+  it('creating second list', () => {
+    const input: CreateListDto = {
+      text: randomString(),
+    }
+    const query = `
+        mutation{
+            upsertList(
+              listInput:${createitemObject(input)}
+              ){
+              id
+              text
+              active
+              todos{
+                id
+              }
+            }
+        }
+      `
+    return gqlAuthenticatedRequest(app, BearerToken, query).expect(
+      ({ body }) => {
+        const { id, text, active, todos } = body.data.upsertList
+        expect(active).toBe(true)
+        expect(id).toBeDefined()
+        lists[1].id = id
+        expect(todos.length).toBe(0)
+        expect(text).toBe(input.text)
+      },
+    )
+  })
+
   it('creating list with another user', () => {
     const input: CreateListDto = {
       text: randomString(),
@@ -125,7 +155,7 @@ describe('Lists and Todos Resolvers (e2e)', () => {
         const { id, text, active, todos } = body.data.upsertList
         expect(active).toBe(true)
         expect(id).toBeDefined()
-        lists[1].id = id
+        lists[2].id = id
         expect(todos.length).toBe(0)
         expect(text).toBe(input.text)
       },
@@ -158,6 +188,37 @@ describe('Lists and Todos Resolvers (e2e)', () => {
         expect(id).toBeDefined()
         expect(text).toBe(input.text)
         lists[0].todos[0] = { id }
+        expect(list.id).toBe(input.listId)
+      },
+    )
+  })
+
+  it('creating todo with another user', () => {
+    const input: CreateTodoDto = {
+      text: randomString(),
+      listId: lists[2].id,
+      completed: true,
+    }
+    const query = `
+        mutation{
+            upsertTodo(
+              todoInput:${createitemObject(input)}
+              ){
+              id
+              text
+              completed
+              list{
+                id
+              }
+            }
+        }
+      `
+    return gqlAuthenticatedRequest(app, secondBearerToken, query).expect(
+      ({ body }) => {
+        const { id, text, completed, list } = body.data.upsertTodo
+        expect(completed).toBe(true)
+        expect(id).toBeDefined()
+        expect(text).toBe(input.text)
         expect(list.id).toBe(input.listId)
       },
     )
@@ -214,12 +275,51 @@ describe('Lists and Todos Resolvers (e2e)', () => {
     )
   })
 
+  it('todos', () => {
+    const todoId = lists[0].todos[0].id
+    const query = `
+        query{
+          todos{
+              total
+              items{
+                id
+              }
+            }
+        }
+      `
+    return gqlAuthenticatedRequest(app, BearerToken, query).expect(
+      ({ body }) => {
+        const { total, items } = body.data.todos
+        expect(total).toBe(1)
+        expect(items[0].id).toBe(todoId)
+        expect(items.length).toBe(1)
+      },
+    )
+  })
+
+  it('todo', () => {
+    const todoId = lists[0].todos[0].id
+    const query = `
+        query{
+          todo(id:"${todoId}"){
+              id
+            }
+        }
+      `
+    return gqlAuthenticatedRequest(app, BearerToken, query).expect(
+      ({ body }) => {
+        const { id } = body.data.todo
+        expect(id).toBe(todoId)
+      },
+    )
+  })
+
   it('upserting todo', () => {
     const todoId = lists[0].todos[0].id
     const input: CreateTodoDto = {
       text: randomString(),
       completed: true,
-      listId: lists[0].id,
+      listId: lists[1].id,
     }
     const query = `
         mutation{
@@ -242,7 +342,7 @@ describe('Lists and Todos Resolvers (e2e)', () => {
         expect(completed).toBe(true)
         expect(id).toBe(todoId)
         expect(text).toBe(input.text)
-        expect(list.id).toBe(lists[0].id)
+        expect(list.id).toBe(lists[1].id)
       },
     )
   })
@@ -280,7 +380,7 @@ describe('Lists and Todos Resolvers (e2e)', () => {
     return gqlAuthenticatedRequest(app, BearerToken, query).expect(
       ({ body }) => {
         const { total, items } = body.data.lists
-        expect(total).toBe(1)
+        expect(total).toBe(2)
         expect(items[0].id).toBe(lists[0].id)
         expect(items[0].text).toBe(lists[0].text)
       },

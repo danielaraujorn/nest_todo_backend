@@ -66,6 +66,7 @@ type Todo {
   updatedAt: DateTime!
   completed: Boolean!
   list: List!
+  user: User!
 }
 
 type TokenDto {
@@ -81,4 +82,5 @@ type User {
   createdAt: DateTime!
   updatedAt: DateTime!
   lists: [List!]!
+  todos: [Todo!]!
 }

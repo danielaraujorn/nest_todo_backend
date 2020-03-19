@@ -10,6 +10,7 @@ import {
   Generated,
 } from 'typeorm'
 import { ListEntity } from '../../list/entities/list.entity'
+import { UserEntity } from '../../user/entities/user.entity'
 
 @Entity('Todo')
 @ObjectType('Todo')
@@ -41,4 +42,11 @@ export class TodoEntity {
     list => list.todos,
   )
   list: ListEntity
+
+  @Field(() => UserEntity)
+  @ManyToOne(
+    () => UserEntity,
+    user => user.todos,
+  )
+  user: UserEntity
 }

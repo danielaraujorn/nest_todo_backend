@@ -24,7 +24,3 @@
 ## After register or login
 
 - Place your token in header like: `{Authorization:'Bearer <token>'}`
-
-## Next steps
-
-- List and Todos E2E Tests

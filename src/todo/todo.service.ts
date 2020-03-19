@@ -17,7 +17,7 @@ export class TodoService {
 
   async findById(user: UserEntity, id: string): Promise<TodoEntity> {
     return await this.todoRepository.findOne(
-      { id, list: { user: { id: user.id } } },
+      { id, user: { id: user.id } },
       { relations: ['list'] },
     )
   }
@@ -37,17 +37,19 @@ export class TodoService {
     if (!list) throw new UnauthorizedException()
 
     if (id) {
-      const { list: todoList, ...todo } = await this.todoRepository.findOne({
+      const todo = await this.todoRepository.findOne({
         id,
+        user: { id: user.id },
       })
       if (!todo) throw new UnauthorizedException()
       return await this.todoRepository.save({
         list,
+        user,
         ...todo,
         ...newTodoInput,
       })
     }
-    return await this.todoRepository.save({ list, ...newTodoInput })
+    return await this.todoRepository.save({ list, user, ...newTodoInput })
   }
 
   async findTodos(
@@ -60,12 +62,12 @@ export class TodoService {
       [fieldSort]: order,
     }
 
-    const idsWhere = ids ? { _id: { $in: ids } } : {}
-    const listIdWhere = listId ? { id: listId } : {}
-    const userWhere = { list: { ...listIdWhere, user: { id: user.id } } }
+    const idsWhere = ids ? { _id: { $in: ids } } : undefined
+    const listIdWhere = listId ? { list: { id: listId } } : undefined
     const $where = {
       ...idsWhere,
-      ...userWhere,
+      ...listIdWhere,
+      user: { id: user.id },
     }
 
     const [items, total]: [TodoEntity[], number] = await Promise.all([
