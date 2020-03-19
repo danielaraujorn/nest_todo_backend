@@ -57,12 +57,12 @@ export class ListService {
         { relations: ['todos'] },
       )
       if (!list) throw new UnauthorizedException()
-      return await this.listRepository.save({ ...newListInput, ...list, user })
+      return await this.listRepository.save({ ...list, user, ...newListInput })
     }
     return await this.listRepository.save({
-      ...newListInput,
       user,
       todos: [],
+      ...newListInput,
     })
   }
 }

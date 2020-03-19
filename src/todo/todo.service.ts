@@ -41,13 +41,13 @@ export class TodoService {
       })
       if (!todo) throw new UnauthorizedException()
       return await this.todoRepository.save({
-        ...newTodoInput,
         ...todo,
         list,
         user,
+        ...newTodoInput,
       })
     }
-    return await this.todoRepository.save({ ...newTodoInput, list, user })
+    return await this.todoRepository.save({ list, user, ...newTodoInput })
   }
 
   async findTodos(
