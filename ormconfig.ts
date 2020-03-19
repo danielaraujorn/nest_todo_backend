@@ -3,9 +3,6 @@ const TypeOrmConfig = () => {
 
   const migrationsDir = '/db/migrations'
 
-  console.log(process.env.NODE_ENV)
-  console.log(process.env.NODE_ENV)
-
   return {
     type: 'postgres',
     url: `postgres://${DB_USERNAME}:${DB_PASSWORD}@${DB_HOST}:${DB_PORT}/${DB_NAME}`,
