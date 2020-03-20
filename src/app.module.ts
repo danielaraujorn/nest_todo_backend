@@ -14,6 +14,7 @@ import 'dotenv'
     GraphQLModule.forRoot({
       autoSchemaFile: 'schema.gql',
       playground: true,
+      introspection: true,
       debug: process.env.NODE_ENV === 'development',
       context: ({ req }) => ({ req }),
     }),

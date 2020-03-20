@@ -14,6 +14,7 @@
 - Tslint
 - Prettier
 - E2E tests
+- Deployed on Heroku
 
 ## Steps to start server
 
