@@ -2,8 +2,8 @@ import { ID, Field, InputType } from '@nestjs/graphql'
 
 @InputType('CreateTodoInput')
 export class CreateTodoDto {
-  @Field({ nullable: true })
-  text?: string
+  @Field()
+  text: string
 
   @Field(() => ID)
   listId: string
