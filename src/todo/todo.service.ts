@@ -1,4 +1,4 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common'
+import { Injectable, ForbiddenException } from '@nestjs/common'
 import { TodoEntity } from './entities/todo.entity'
 import { CreateTodoDto } from './dto/createTodo.dto'
 import { TodoRepository } from './repositories/todo.repository'
@@ -22,6 +22,21 @@ export class TodoService {
     )
   }
 
+  async delete(
+    user: UserEntity,
+    id: string,
+    deleted: boolean,
+  ): Promise<TodoEntity> {
+    const todo = await this.todoRepository.findOne({
+      id,
+      user: { id: user.id },
+    })
+
+    if (!todo) throw new ForbiddenException()
+
+    return await this.todoRepository.save({ ...todo, deleted })
+  }
+
   async upsert(
     user: UserEntity,
     id: string | undefined,
@@ -32,14 +47,14 @@ export class TodoService {
       user: { id: user.id },
     })
 
-    if (!list) throw new UnauthorizedException()
+    if (!list) throw new ForbiddenException()
 
     if (id) {
       const todo = await this.todoRepository.findOne({
         id,
         user: { id: user.id },
       })
-      if (!todo) throw new UnauthorizedException()
+      if (!todo) throw new ForbiddenException()
       return await this.todoRepository.save({
         ...todo,
         list,
@@ -54,7 +69,7 @@ export class TodoService {
     user: UserEntity,
     params: FindTodosDto,
   ): Promise<ListTodosEntity> {
-    const { skip, take, ids, listId, order, fieldSort } = params
+    const { skip, take, ids, listId, order, fieldSort, deleted } = params
 
     const $order: findOrder = {
       [fieldSort]: order,
@@ -65,6 +80,7 @@ export class TodoService {
     const $where = {
       ...idsWhere,
       ...listIdWhere,
+      deleted,
       user: { id: user.id },
     }
 

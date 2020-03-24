@@ -1,5 +1,5 @@
 import { NotFoundException, UseGuards } from '@nestjs/common'
-import { Query, Mutation, Args, Resolver } from '@nestjs/graphql'
+import { Query, Mutation, Args, Resolver, ID } from '@nestjs/graphql'
 import { TodoEntity } from './entities/todo.entity'
 import { CreateTodoDto } from './dto/createTodo.dto'
 import { UpsertTodoDto } from './dto/upsertTodo.dto'
@@ -18,7 +18,7 @@ export class TodoResolver {
   @Query(() => TodoEntity)
   async todo(
     @CurrentUser() user: UserEntity,
-    @Args('id') id: string,
+    @Args({ name: 'id', type: () => ID }) id: string,
   ): Promise<TodoEntity> {
     const list = await this.service.findById(user, id)
     if (!list) {
@@ -45,5 +45,15 @@ export class TodoResolver {
     const { id, todoInput }: { id?: string; todoInput: CreateTodoDto } = args
 
     return await this.service.upsert(user, id, todoInput)
+  }
+
+  @UseGuards(GqlAuthGuard)
+  @Mutation(() => TodoEntity)
+  async deleteTodo(
+    @CurrentUser() user: UserEntity,
+    @Args({ name: 'id', type: () => ID }) id: string,
+    @Args('deleted') deleted: boolean,
+  ): Promise<TodoEntity> {
+    return await this.service.delete(user, id, deleted)
   }
 }

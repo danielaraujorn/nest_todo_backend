@@ -73,7 +73,6 @@ describe('Lists and Todos Resolvers (e2e)', () => {
   it('creating list', () => {
     const input: CreateListDto = {
       text: randomString(),
-      active: true,
     }
     const query = `
         mutation{
@@ -82,7 +81,7 @@ describe('Lists and Todos Resolvers (e2e)', () => {
               ){
               id
               text
-              active
+              deleted
               todos{
                 id
               }
@@ -91,8 +90,8 @@ describe('Lists and Todos Resolvers (e2e)', () => {
       `
     return gqlAuthenticatedRequest(app, BearerToken, query).expect(
       ({ body }) => {
-        const { id, text, active, todos } = body.data.upsertList
-        expect(active).toBe(true)
+        const { id, text, deleted, todos } = body.data.upsertList
+        expect(deleted).toBe(false)
         expect(id).toBeDefined()
         lists[0].id = id
         expect(todos.length).toBe(0)
@@ -112,7 +111,7 @@ describe('Lists and Todos Resolvers (e2e)', () => {
               ){
               id
               text
-              active
+              deleted
               todos{
                 id
               }
@@ -121,8 +120,8 @@ describe('Lists and Todos Resolvers (e2e)', () => {
       `
     return gqlAuthenticatedRequest(app, BearerToken, query).expect(
       ({ body }) => {
-        const { id, text, active, todos } = body.data.upsertList
-        expect(active).toBe(true)
+        const { id, text, deleted, todos } = body.data.upsertList
+        expect(deleted).toBe(false)
         expect(id).toBeDefined()
         lists[1].id = id
         expect(todos.length).toBe(0)
@@ -134,7 +133,6 @@ describe('Lists and Todos Resolvers (e2e)', () => {
   it('creating list with another user', () => {
     const input: CreateListDto = {
       text: randomString(),
-      active: true,
     }
     const query = `
         mutation{
@@ -143,7 +141,6 @@ describe('Lists and Todos Resolvers (e2e)', () => {
               ){
               id
               text
-              active
               todos{
                 id
               }
@@ -152,8 +149,7 @@ describe('Lists and Todos Resolvers (e2e)', () => {
       `
     return gqlAuthenticatedRequest(app, secondBearerToken, query).expect(
       ({ body }) => {
-        const { id, text, active, todos } = body.data.upsertList
-        expect(active).toBe(true)
+        const { id, text, todos } = body.data.upsertList
         expect(id).toBeDefined()
         lists[2].id = id
         expect(todos.length).toBe(0)
@@ -227,7 +223,6 @@ describe('Lists and Todos Resolvers (e2e)', () => {
   it('upserting list', () => {
     const input: CreateListDto = {
       text: lists[0].text,
-      active: false,
     }
     const query = `
         mutation{
@@ -235,7 +230,7 @@ describe('Lists and Todos Resolvers (e2e)', () => {
             listInput:${createitemObject(input)}){
               id
               text
-              active
+              deleted
               todos{
                 id
               }
@@ -244,8 +239,8 @@ describe('Lists and Todos Resolvers (e2e)', () => {
       `
     return gqlAuthenticatedRequest(app, BearerToken, query).expect(
       ({ body }) => {
-        const { id, text, active, todos } = body.data.upsertList
-        expect(active).toBe(false)
+        const { id, text, deleted, todos } = body.data.upsertList
+        expect(deleted).toBe(false)
         expect(id).toBe(lists[0].id)
         expect(todos.length).toBe(1)
         expect(text).toBe(lists[0].text)
@@ -392,16 +387,16 @@ describe('Lists and Todos Resolvers (e2e)', () => {
             list(id:"${lists[0].id}"){
               id
               text
-              active
+              deleted
             }
         }
       `
     return gqlAuthenticatedRequest(app, BearerToken, query).expect(
       ({ body }) => {
-        const { id, text, active } = body.data.list
+        const { id, text, deleted } = body.data.list
         expect(id).toBe(lists[0].id)
         expect(text).toBe(lists[0].text)
-        expect(active).toBe(false)
+        expect(deleted).toBe(false)
       },
     )
   })
@@ -419,6 +414,78 @@ describe('Lists and Todos Resolvers (e2e)', () => {
         const { errors, data } = body
         expect(errors).toBeDefined()
         expect(data).toBeNull()
+      },
+    )
+  })
+
+  it('delete todo without permission', () => {
+    const query = `
+        mutation{
+            deleteTodo(id:"${lists[0].todos[0].id}",deleted:true){
+              id
+            }
+        }
+      `
+    return gqlAuthenticatedRequest(app, secondBearerToken, query).expect(
+      ({ body }) => {
+        const { errors, data } = body
+        expect(errors).toBeDefined()
+        expect(data).toBeNull()
+      },
+    )
+  })
+  it('delete todo', () => {
+    const query = `
+        mutation{
+            deleteTodo(id:"${lists[0].todos[0].id}",deleted:true){
+              id
+              text
+              deleted
+            }
+        }
+      `
+    return gqlAuthenticatedRequest(app, BearerToken, query).expect(
+      ({ body }) => {
+        const { id, text, deleted } = body.data.deleteTodo
+        expect(id).toBe(lists[0].todos[0].id)
+        expect(text).toBeDefined()
+        expect(deleted).toBe(true)
+      },
+    )
+  })
+
+  it('delete list without permission', () => {
+    const query = `
+        mutation{
+            deleteTodo(id:"${lists[0].id}",deleted:true){
+              id
+            }
+        }
+      `
+    return gqlAuthenticatedRequest(app, secondBearerToken, query).expect(
+      ({ body }) => {
+        const { errors, data } = body
+        expect(errors).toBeDefined()
+        expect(data).toBeNull()
+      },
+    )
+  })
+  it('delete list', () => {
+    const query = `
+        mutation{
+            deleteList(id:"${lists[0].id}",deleted:true){
+              id
+              text
+              deleted
+            }
+        }
+      `
+    return gqlAuthenticatedRequest(app, BearerToken, query).expect(
+      ({ body }) => {
+        const { id, text, deleted } = body.data.deleteList
+        expect(id).toBe(lists[0].id)
+        expect(text).toBe(lists[0].text)
+        expect(deleted).toBe(true)
       },
     )
   })

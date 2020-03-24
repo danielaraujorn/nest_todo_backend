@@ -10,7 +10,6 @@ type AuthStatusDto {
 
 input CreateListInput {
   text: String!
-  active: Boolean
 }
 
 input CreateTodoInput {
@@ -29,7 +28,7 @@ type List {
   text: String!
   createdAt: DateTime!
   updatedAt: DateTime!
-  active: Boolean!
+  deleted: Boolean!
   todos: [Todo!]!
   user: User!
 }
@@ -46,22 +45,25 @@ type ListTodos {
 
 type Mutation {
   upsertList(id: ID, listInput: CreateListInput!): List!
+  deleteList(deleted: Boolean!, id: ID!): List!
   upsertTodo(id: ID, todoInput: CreateTodoInput!): Todo!
+  deleteTodo(deleted: Boolean!, id: ID!): Todo!
   register(firstName: String!, lastName: String, email: String!, password: String!): AuthStatusDto!
   login(email: String!, password: String!): AuthStatusDto!
 }
 
 type Query {
-  list(id: String!): List!
-  lists(skip: Int = 0, take: Int = 50, ids: [ID!], order: String = "DESC", fieldSort: String = "updatedAt"): ListLists!
-  todo(id: String!): Todo!
-  todos(skip: Int = 0, take: Int = 50, ids: [ID!], listId: ID, order: String = "DESC", fieldSort: String = "updatedAt"): ListTodos!
+  list(id: ID!): List!
+  lists(skip: Int = 0, take: Int = 50, ids: [ID!], deleted: Boolean = false, order: String = "DESC", fieldSort: String = "updatedAt"): ListLists!
+  todo(id: ID!): Todo!
+  todos(skip: Int = 0, take: Int = 50, ids: [ID!], listId: ID, deleted: Boolean = false, order: String = "DESC", fieldSort: String = "updatedAt"): ListTodos!
   ownUser: User!
 }
 
 type Todo {
   id: ID!
   text: String!
+  deleted: Boolean!
   createdAt: DateTime!
   updatedAt: DateTime!
   completed: Boolean!

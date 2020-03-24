@@ -25,6 +25,10 @@ export class TodoEntity {
   text: string
 
   @Field()
+  @Column({ default: false })
+  deleted: boolean
+
+  @Field()
   @CreateDateColumn({ name: 'created_at', type: 'timestamp' })
   createdAt: Date
 

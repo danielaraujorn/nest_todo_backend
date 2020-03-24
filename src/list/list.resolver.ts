@@ -1,5 +1,5 @@
 import { NotFoundException, UseGuards } from '@nestjs/common'
-import { Query, Mutation, Args, Resolver } from '@nestjs/graphql'
+import { Query, Mutation, Args, Resolver, ID } from '@nestjs/graphql'
 import { ListEntity } from './entities/list.entity'
 import { ListListsEntity } from './entities/listLists.entity'
 import { CreateListDto } from './dto/createList.dto'
@@ -18,7 +18,7 @@ export class ListResolver {
   @Query(() => ListEntity)
   async list(
     @CurrentUser() user: UserEntity,
-    @Args('id') id: string,
+    @Args({ name: 'id', type: () => ID }) id: string,
   ): Promise<ListEntity> {
     const list = await this.service.findById(user, id)
     if (!list) {
@@ -45,5 +45,15 @@ export class ListResolver {
     const { id, listInput }: { id?: string; listInput: CreateListDto } = args
 
     return await this.service.upsert(user, id, listInput)
+  }
+
+  @UseGuards(GqlAuthGuard)
+  @Mutation(() => ListEntity)
+  async deleteList(
+    @CurrentUser() user: UserEntity,
+    @Args({ name: 'id', type: () => ID }) id: string,
+    @Args('deleted') deleted: boolean,
+  ): Promise<ListEntity> {
+    return await this.service.delete(user, id, deleted)
   }
 }

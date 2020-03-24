@@ -17,6 +17,9 @@ export class FindListsDto {
   @IsArray()
   ids?: string[]
 
+  @Field(() => Boolean, { nullable: true })
+  deleted?: boolean = false
+
   @Field(() => String, { nullable: true })
   order?: order = 'DESC'
 

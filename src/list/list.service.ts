@@ -1,4 +1,4 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common'
+import { Injectable, ForbiddenException } from '@nestjs/common'
 import { ListEntity } from './entities/list.entity'
 import { FindListsDto } from './dto/findLists.dto'
 import { CreateListDto } from './dto/createList.dto'
@@ -16,13 +16,13 @@ export class ListService {
   }
 
   async find(user: UserEntity, params: FindListsDto): Promise<ListListsEntity> {
-    const { skip, take, ids, order, fieldSort } = params
+    const { skip, take, ids, order, fieldSort, deleted } = params
     const $order: findOrder = {
       [fieldSort]: order,
     }
 
     const idsWhere = ids ? { _id: { $in: ids } } : {}
-    const $where = { ...idsWhere, user: { id: user.id } }
+    const $where = { ...idsWhere, deleted, user: { id: user.id } }
 
     const [items, total]: [ListEntity[], number] = await Promise.all([
       this.listRepository.find({
@@ -56,7 +56,7 @@ export class ListService {
         },
         { relations: ['todos'] },
       )
-      if (!list) throw new UnauthorizedException()
+      if (!list) throw new ForbiddenException()
       return await this.listRepository.save({ ...list, user, ...newListInput })
     }
     return await this.listRepository.save({
@@ -64,5 +64,20 @@ export class ListService {
       todos: [],
       ...newListInput,
     })
+  }
+
+  async delete(
+    user: UserEntity,
+    id: string,
+    deleted: boolean,
+  ): Promise<ListEntity> {
+    const list = await this.listRepository.findOne({
+      id,
+      user: { id: user.id },
+    })
+
+    if (!list) throw new ForbiddenException()
+
+    return await this.listRepository.save({ ...list, deleted })
   }
 }

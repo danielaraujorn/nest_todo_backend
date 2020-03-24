@@ -34,8 +34,8 @@ export class ListEntity {
   updatedAt?: Date
 
   @Field()
-  @Column({ default: true })
-  active: boolean
+  @Column({ default: false })
+  deleted: boolean
 
   @Field(() => [TodoEntity])
   @OneToMany(

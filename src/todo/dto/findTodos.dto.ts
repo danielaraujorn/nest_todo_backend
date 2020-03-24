@@ -20,6 +20,9 @@ export class FindTodosDto {
   @Field(() => ID, { nullable: true })
   listId?: string
 
+  @Field(() => Boolean, { nullable: true })
+  deleted?: boolean = false
+
   @Field(() => String, { nullable: true })
   order?: order = 'DESC'
 
