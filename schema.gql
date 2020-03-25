@@ -13,7 +13,7 @@ input CreateListInput {
 }
 
 input CreateTodoInput {
-  text: String
+  text: String!
   listId: ID!
   completed: Boolean
 }
@@ -48,6 +48,7 @@ type Mutation {
   deleteList(deleted: Boolean!, id: ID!): List!
   upsertTodo(id: ID, todoInput: CreateTodoInput!): Todo!
   deleteTodo(deleted: Boolean!, id: ID!): Todo!
+  updateUser(firstName: String, lastName: String, email: String, password: String): User!
   register(firstName: String!, lastName: String, email: String!, password: String!): AuthStatusDto!
   login(email: String!, password: String!): AuthStatusDto!
 }
