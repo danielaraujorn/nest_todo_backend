@@ -55,9 +55,9 @@ type Mutation {
 
 type Query {
   list(id: ID!): List!
-  lists(skip: Int = 0, take: Int = 50, ids: [ID!], deleted: Boolean = false, order: String = "DESC", fieldSort: String = "updatedAt"): ListLists!
+  lists(skip: Int = 0, take: Int = 100, ids: [ID!], deleted: Boolean = false, order: String = "DESC", fieldSort: String = "createdAt"): ListLists!
   todo(id: ID!): Todo!
-  todos(skip: Int = 0, take: Int = 50, ids: [ID!], listId: ID, deleted: Boolean = false, order: String = "DESC", fieldSort: String = "updatedAt"): ListTodos!
+  todos(skip: Int = 0, take: Int = 100, ids: [ID!], listId: ID, deleted: Boolean = false, order: String = "DESC", fieldSort: String = "createdAt"): ListTodos!
   ownUser: User!
 }
 

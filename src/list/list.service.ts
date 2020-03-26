@@ -12,7 +12,10 @@ export class ListService {
   constructor(private readonly listRepository: ListRepository) {}
 
   async findById(user: UserEntity, id: string): Promise<ListEntity> {
-    return await this.listRepository.findOne({ id, user: { id: user.id } })
+    return await this.listRepository.findOne({
+      id,
+      user: { id: user.id },
+    })
   }
 
   async find(user: UserEntity, params: FindListsDto): Promise<ListListsEntity> {

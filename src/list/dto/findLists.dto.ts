@@ -4,14 +4,14 @@ import { order } from '../../common/types/order.type'
 
 @ArgsType()
 export class FindListsDto {
-  @Field(() => Int)
+  @Field(() => Int, { nullable: true })
   @Min(0)
-  skip: number = 0
+  skip?: number = 0
 
-  @Field(() => Int)
+  @Field(() => Int, { nullable: true })
   @Min(1)
   @Max(50)
-  take: number = 50
+  take?: number = 100
 
   @Field(() => [ID], { nullable: true })
   @IsArray()
@@ -24,5 +24,5 @@ export class FindListsDto {
   order?: order = 'DESC'
 
   @Field({ nullable: true })
-  fieldSort?: string = 'updatedAt'
+  fieldSort?: string = 'createdAt'
 }
